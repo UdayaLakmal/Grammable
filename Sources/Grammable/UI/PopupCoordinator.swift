@@ -100,6 +100,20 @@ final class PopupCoordinator: ObservableObject {
 
     func openMenu() {
         autoHide?.cancel()
+        if let context, context.needsCopy {
+            // The app hid the selection from Accessibility: copy it now (clipboard is restored).
+            Task {
+                let text = await AccessibilityService.copySelectionUsingClipboard() ?? ""
+                if text.trimmingCharacters(in: .whitespacesAndNewlines).count < settings.minSelectionLength {
+                    DiagnosticLog.log("copy fallback found no text")
+                    dismiss()
+                    return
+                }
+                self.context = context.with(text: text)
+                openMenu()
+            }
+            return
+        }
         reloadPresets()
         phase = .menu
         layout()

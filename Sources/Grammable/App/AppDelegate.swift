@@ -72,7 +72,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let window = shared?.statusItem?.button?.window,
               let screen = window.screen ?? NSScreen.screens.first else { return false }
         let frame = window.frame
-        if !window.isVisible || !window.occlusionState.contains(.visible) { return true }
         guard let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea else { return false }
         let notch = NSRect(x: left.maxX, y: left.minY, width: right.minX - left.maxX, height: left.height)
         return notch.width > 0 && frame.midX > notch.minX && frame.midX < notch.maxX

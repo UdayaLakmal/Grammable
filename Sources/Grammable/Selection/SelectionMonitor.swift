@@ -13,6 +13,12 @@ struct SelectionContext {
     let anchor: NSRect
     let isEditable: Bool
     let source: Source
+    /// The app did not expose the selected text; copy it with ⌘C when the user clicks G.
+    var needsCopy = false
+
+    func with(text: String) -> SelectionContext {
+        SelectionContext(text: text, app: app, anchor: anchor, isEditable: isEditable, source: source)
+    }
 }
 
 /// Watches for text being selected in other apps (mouse drag, double/triple click,
@@ -30,8 +36,29 @@ final class SelectionMonitor {
     private static let selectionKeys: Set<UInt16> = [123, 124, 125, 126, 115, 119, 116, 121] // arrows, home, end, page up/down
     private static let keyA: UInt16 = 0
 
+    private var activationObserver: NSObjectProtocol?
+    private var terminationObserver: NSObjectProtocol?
+
     func start() {
         stop()
+        let center = NSWorkspace.shared.notificationCenter
+        activationObserver = center.addObserver(forName: NSWorkspace.didActivateApplicationNotification,
+                                                object: nil, queue: .main) { note in
+            guard AccessibilityService.isTrusted,
+                  let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
+            AccessibilityService.prepare(app: app)
+        }
+        terminationObserver = center.addObserver(forName: NSWorkspace.didTerminateApplicationNotification,
+                                                 object: nil, queue: .main) { note in
+            if let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+                AccessibilityService.forget(pid: app.processIdentifier)
+            }
+        }
+        if AccessibilityService.isTrusted {
+            for app in NSWorkspace.shared.runningApplications where app.activationPolicy == .regular {
+                AccessibilityService.prepare(app: app)
+            }
+        }
         let mask: NSEvent.EventTypeMask = [.leftMouseDown, .leftMouseUp, .keyDown, .keyUp, .scrollWheel]
         if let monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] event in
             self?.handle(event)
@@ -41,6 +68,10 @@ final class SelectionMonitor {
     }
 
     func stop() {
+        [activationObserver, terminationObserver].compactMap { $0 }
+            .forEach(NSWorkspace.shared.notificationCenter.removeObserver)
+        activationObserver = nil
+        terminationObserver = nil
         monitors.forEach(NSEvent.removeMonitor)
         monitors.removeAll()
         pending?.cancel()
@@ -112,15 +143,31 @@ final class SelectionMonitor {
         }
 
         AccessibilityService.prepare(app: app)
-        guard let element = AccessibilityService.focusedElement() else {
+        var focused = AccessibilityService.focusedElement(in: app)
+        if focused == nil {
+            // A just-prepared Chromium/Electron app may still be building its tree: retry briefly.
+            usleep(120_000)
+            focused = AccessibilityService.focusedElement(in: app)
+        }
+        guard let element = focused else {
             DiagnosticLog.log("skip: \(bundleID) exposes no focused element"); return nil
         }
         guard !AccessibilityService.isSecureField(element) else {
             DiagnosticLog.log("skip: \(bundleID) password field"); return nil
         }
         let role = AccessibilityService.stringAttribute(element, kAXRoleAttribute) ?? "?"
-        guard let text = AccessibilityService.selectedText(of: element) else {
-            DiagnosticLog.log("skip: \(bundleID) \(role) has no selected-text attribute"); return nil
+        guard let text = AccessibilityService.selectedText(of: element), !text.isEmpty else {
+            // Web pages in Chromium/Electron often hide the selected text from Accessibility.
+            // After a real mouse selection there, offer the button and copy the text on click.
+            if source == .mouse, AccessibilityService.isWebContentApp(app) {
+                DiagnosticLog.log("show (copy fallback): \(bundleID) \(role)")
+                var context = SelectionContext(text: "", app: app,
+                                               anchor: NSRect(x: mouse.x, y: mouse.y, width: 1, height: 1),
+                                               isEditable: AccessibilityService.isEditable(element), source: source)
+                context.needsCopy = true
+                return context
+            }
+            DiagnosticLog.log("skip: \(bundleID) \(role) has no selected text"); return nil
         }
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= settings.minSelectionLength, text.count <= 30_000 else {

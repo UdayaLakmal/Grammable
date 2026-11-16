@@ -31,14 +31,23 @@ enum AccessibilityService {
         return element
     }()
 
-    static func focusedElement() -> AXUIElement? {
-        var value: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(systemWide, kAXFocusedUIElementAttribute as CFString, &value) == .success,
-              let value, CFGetTypeID(value) == AXUIElementGetTypeID()
-        else { return nil }
-        let element = value as! AXUIElement
-        AXUIElementSetMessagingTimeout(element, 0.4)
-        return element
+    /// The focused text element. Asks the frontmost app directly first (reliable for
+    /// Chromium/Electron), then falls back to the system-wide element.
+    static func focusedElement(in app: NSRunningApplication? = NSWorkspace.shared.frontmostApplication) -> AXUIElement? {
+        func copyFocused(_ source: AXUIElement) -> AXUIElement? {
+            var value: CFTypeRef?
+            guard AXUIElementCopyAttributeValue(source, kAXFocusedUIElementAttribute as CFString, &value) == .success,
+                  let value, CFGetTypeID(value) == AXUIElementGetTypeID() else { return nil }
+            let element = value as! AXUIElement
+            AXUIElementSetMessagingTimeout(element, 0.4)
+            return element
+        }
+        if let app {
+            let appElement = AXUIElementCreateApplication(app.processIdentifier)
+            AXUIElementSetMessagingTimeout(appElement, 0.4)
+            if let element = copyFocused(appElement) { return element }
+        }
+        return copyFocused(systemWide)
     }
 
     static func selectedText(of element: AXUIElement) -> String? {
@@ -90,15 +99,50 @@ enum AccessibilityService {
 
     private static var preparedPIDs = Set<pid_t>()
 
-    /// Chromium/Electron apps (Slack, Discord, VS Code, Notion…) only build their
-    /// accessibility tree when asked. This flag asks politely and is harmless elsewhere.
+    /// Chromium browsers only build their accessibility tree for assistive apps.
+    private static let chromiumBrowserPrefixes = [
+        "com.google.Chrome", "com.brave.Browser", "com.microsoft.edgemac", "company.thebrowser",
+        "com.vivaldi.Vivaldi", "com.operasoftware.Opera", "org.chromium.Chromium",
+    ]
+
+    /// Chromium/Electron apps (Chrome, Slack, Discord, VS Code, Notion, Claude…) only build their
+    /// accessibility tree when asked. Called when an app becomes active, so the tree is ready
+    /// by the time the user selects text.
     static func prepare(app: NSRunningApplication) {
         let pid = app.processIdentifier
-        guard !preparedPIDs.contains(pid) else { return }
+        guard pid != ProcessInfo.processInfo.processIdentifier, !preparedPIDs.contains(pid) else { return }
         preparedPIDs.insert(pid)
         let appElement = AXUIElementCreateApplication(pid)
         AXUIElementSetMessagingTimeout(appElement, 0.3)
+        // Electron apps.
         AXUIElementSetAttributeValue(appElement, "AXManualAccessibility" as CFString, kCFBooleanTrue)
+        // Chromium browsers.
+        if let id = app.bundleIdentifier, chromiumBrowserPrefixes.contains(where: { id.hasPrefix($0) }) {
+            AXUIElementSetAttributeValue(appElement, "AXEnhancedUserInterface" as CFString, kCFBooleanTrue)
+        }
+    }
+
+    static func forget(pid: pid_t) {
+        preparedPIDs.remove(pid)
+        webContentCache[pid] = nil
+    }
+
+    private static var webContentCache: [pid_t: Bool] = [:]
+
+    /// Browsers and Electron apps, where a mouse drag almost always selects text.
+    static func isWebContentApp(_ app: NSRunningApplication) -> Bool {
+        if let cached = webContentCache[app.processIdentifier] { return cached }
+        var result = false
+        if let id = app.bundleIdentifier {
+            result = chromiumBrowserPrefixes.contains { id.hasPrefix($0) }
+                || ["com.apple.Safari", "com.apple.SafariTechnologyPreview", "org.mozilla.firefox"].contains(id)
+        }
+        if !result, let url = app.bundleURL {
+            let electron = url.appendingPathComponent("Contents/Frameworks/Electron Framework.framework")
+            result = FileManager.default.fileExists(atPath: electron.path)
+        }
+        webContentCache[app.processIdentifier] = result
+        return result
     }
 
     // MARK: Clipboard fallback
