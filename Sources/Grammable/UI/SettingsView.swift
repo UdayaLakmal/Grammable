@@ -76,6 +76,7 @@ struct SettingsView: View {
 struct GeneralSettings: View {
     @ObservedObject private var settings = AppSettings.shared
     @State private var trusted = AccessibilityService.isTrusted
+    @State private var iconHidden = false
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
     private let timer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
@@ -93,6 +94,20 @@ struct GeneralSettings: View {
                         Button("Got it") { settings.hasCompletedOnboarding = true }
                     }
                     .padding(.vertical, 4)
+                }
+            }
+
+            if iconHidden {
+                Section {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: "menubar.rectangle").font(.title2).foregroundStyle(.orange)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("The Grammable menu bar icon is hidden behind the notch").font(.headline)
+                            Text("Your menu bar is full, so macOS hides the newest icons behind the camera. Grammable still works: select text for the G button, or press \(HotKey.defaultDisplay). To see the icon, quit some menu bar apps or hold ⌘ and drag icons off the menu bar. Open Grammable again any time to reach these settings.")
+                                .font(.caption).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
                 }
             }
 
@@ -151,7 +166,10 @@ struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
-        .onReceive(timer) { _ in trusted = AccessibilityService.isTrusted }
+        .onReceive(timer) { _ in
+            trusted = AccessibilityService.isTrusted
+            iconHidden = AppDelegate.isStatusItemHidden
+        }
     }
 }
 

@@ -21,8 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         Self.shared = self
         setUpStatusItem()
-        NSLog("Grammable %@ started. Accessibility trusted: %@", Brand.version,
-              AccessibilityService.isTrusted ? "yes" : "no")
+        DiagnosticLog.log("launch: version \(Brand.version), accessibility trusted: \(AccessibilityService.isTrusted), enabled: \(settings.isEnabled), popup: \(settings.popupOnSelection)")
 
         let popup = PopupCoordinator.shared
         monitor.onSelection = { context in
@@ -44,6 +43,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if !AccessibilityService.isTrusted {
             watchForTrust()
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            let frame = self.statusItem.button?.window?.frame ?? .zero
+            DiagnosticLog.log("menu bar icon at x=\(Int(frame.minX)) hidden behind notch: \(Self.isStatusItemHidden)")
+            if Self.isStatusItemHidden { self.openSettings(tab: .general) }
+        }
         if !settings.hasCompletedOnboarding || !AccessibilityService.isTrusted {
             openSettings(tab: .general)
             if !AccessibilityService.isTrusted { AccessibilityService.requestTrust() }
@@ -63,6 +67,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    /// True when macOS has placed the menu bar icon behind the camera notch (menu bar too full).
+    static var isStatusItemHidden: Bool {
+        guard let window = shared?.statusItem?.button?.window,
+              let screen = window.screen ?? NSScreen.screens.first else { return false }
+        let frame = window.frame
+        if !window.isVisible || !window.occlusionState.contains(.visible) { return true }
+        guard let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea else { return false }
+        let notch = NSRect(x: left.maxX, y: left.minY, width: right.minX - left.maxX, height: left.height)
+        return notch.width > 0 && frame.midX > notch.minX && frame.midX < notch.maxX
+    }
+
     /// Opening Grammable again (Finder, Spotlight, Launchpad) shows Settings. This matters because
     /// macOS hides menu bar icons behind the notch when the menu bar is full.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -76,7 +91,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             Task { @MainActor in
                 guard AccessibilityService.isTrusted else { return }
                 timer.invalidate()
-                NSLog("Grammable: Accessibility granted, starting selection monitor")
+                DiagnosticLog.log("accessibility granted: restarting selection monitor")
                 self?.monitor.start()
                 self?.statusItem.menu = self?.buildMenu()
             }

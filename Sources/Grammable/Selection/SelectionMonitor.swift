@@ -1,6 +1,7 @@
 // Grammable — Copyright (C) 2026 Udaya Lakmal — GPL-3.0-or-later
 
 import AppKit
+import ApplicationServices
 
 /// Everything Grammable knows about a piece of selected text.
 struct SelectionContext {
@@ -88,7 +89,12 @@ final class SelectionMonitor {
     }
 
     private func inspect(source: SelectionContext.Source, mouse: NSPoint) {
-        guard settings.isEnabled, settings.popupOnSelection, AccessibilityService.isTrusted else { return }
+        guard settings.isEnabled, settings.popupOnSelection else {
+            DiagnosticLog.log("skip: disabled (enabled=\(settings.isEnabled), popup=\(settings.popupOnSelection))"); return
+        }
+        guard AccessibilityService.isTrusted else {
+            DiagnosticLog.log("skip: Accessibility permission not granted"); return
+        }
         guard let context = Self.currentSelection(source: source, mouse: mouse, settings: settings) else { return }
         onSelection?(context)
     }
@@ -96,19 +102,31 @@ final class SelectionMonitor {
     /// Reads the current selection through Accessibility. Returns nil for excluded apps,
     /// password fields, or selections that are too short.
     static func currentSelection(source: SelectionContext.Source, mouse: NSPoint, settings: AppSettings) -> SelectionContext? {
-        guard let app = NSWorkspace.shared.frontmostApplication,
-              app.bundleIdentifier != Bundle.main.bundleIdentifier,
-              !settings.excludedBundleIDs.contains(app.bundleIdentifier ?? "")
-        else { return nil }
+        guard let app = NSWorkspace.shared.frontmostApplication else {
+            DiagnosticLog.log("skip: no frontmost app"); return nil
+        }
+        let bundleID = app.bundleIdentifier ?? "?"
+        guard bundleID != Bundle.main.bundleIdentifier else { return nil }
+        guard !settings.excludedBundleIDs.contains(bundleID) else {
+            DiagnosticLog.log("skip: \(bundleID) is excluded"); return nil
+        }
 
         AccessibilityService.prepare(app: app)
-        guard let element = AccessibilityService.focusedElement(),
-              !AccessibilityService.isSecureField(element),
-              let text = AccessibilityService.selectedText(of: element)
-        else { return nil }
-
+        guard let element = AccessibilityService.focusedElement() else {
+            DiagnosticLog.log("skip: \(bundleID) exposes no focused element"); return nil
+        }
+        guard !AccessibilityService.isSecureField(element) else {
+            DiagnosticLog.log("skip: \(bundleID) password field"); return nil
+        }
+        let role = AccessibilityService.stringAttribute(element, kAXRoleAttribute) ?? "?"
+        guard let text = AccessibilityService.selectedText(of: element) else {
+            DiagnosticLog.log("skip: \(bundleID) \(role) has no selected-text attribute"); return nil
+        }
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard trimmed.count >= settings.minSelectionLength, text.count <= 30_000 else { return nil }
+        guard trimmed.count >= settings.minSelectionLength, text.count <= 30_000 else {
+            DiagnosticLog.log("skip: \(bundleID) \(role) selection length \(trimmed.count)"); return nil
+        }
+        DiagnosticLog.log("show: \(bundleID) \(role) selection length \(trimmed.count) via \(source)")
 
         let anchor: NSRect
         if source == .mouse {
