@@ -67,7 +67,7 @@ struct SettingsView: View {
             PrivacySettings().tabItem { Label("Privacy", systemImage: "hand.raised") }.tag(SettingsTab.privacy)
             AboutView().tabItem { Label("About", systemImage: "info.circle") }.tag(SettingsTab.about)
         }
-        .frame(width: 620, height: 520)
+        .frame(width: 640, height: 600)
     }
 }
 
@@ -108,6 +108,8 @@ struct GeneralSettings: View {
                     }
                     Spacer()
                     if !trusted {
+                        Text("Already enabled but not working? Remove Grammable from the list with “–”, then add it again.")
+                            .font(.caption2).foregroundStyle(.secondary).frame(maxWidth: 160)
                         Button("Grant Access…") {
                             AccessibilityService.requestTrust()
                             AccessibilityService.openAccessibilitySettings()
@@ -122,6 +124,12 @@ struct GeneralSettings: View {
                     .disabled(!settings.isEnabled)
                 Stepper("Minimum selection: \(settings.minSelectionLength) characters",
                         value: $settings.minSelectionLength, in: 1...200)
+                LabeledContent("Menu bar icon") {
+                    Text("Can't see it? A full menu bar hides icons behind the notch. Hold ⌘ and drag icons to make room, or open Grammable again to reach Settings.")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 330, alignment: .trailing)
+                }
                 LabeledContent("Keyboard shortcut") {
                     Text(HotKey.defaultDisplay).font(.system(.body, design: .monospaced))
                         .padding(.horizontal, 8).padding(.vertical, 2)
@@ -199,22 +207,26 @@ struct BackendSettings: View {
             }
             Link(destination: id.setupURL) { Image(systemName: "questionmark.circle") }
         }
-        Text(status?.detail ?? "Checking…").font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
-        Text(id.privacyNote).font(.caption2).foregroundStyle(.tertiary)
+        VStack(alignment: .leading, spacing: 3) {
+            Text(status?.detail ?? "Checking…").font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+            Text(id.privacyNote).font(.caption2).foregroundStyle(.tertiary)
+        }
 
         if id.executableName != nil {
-            TextField("Custom path (optional)", text: Binding(
-                get: { settings.path(for: id) }, set: { settings.setPath($0, for: id) }))
+            TextField("Path", text: Binding(
+                get: { settings.path(for: id) }, set: { settings.setPath($0, for: id) }),
+                prompt: Text("Auto-detect"))
         }
         if id == .ollama {
-            TextField("Ollama URL", text: $settings.ollamaURL)
+            TextField("Server", text: $settings.ollamaURL, prompt: Text("http://localhost:11434"))
         }
         if id == .openAICompatible {
-            TextField("Server base URL", text: $settings.openAIBaseURL)
+            TextField("Server", text: $settings.openAIBaseURL, prompt: Text("http://localhost:1234/v1"))
         }
         if id != .apple {
-            TextField(modelPlaceholder(id), text: Binding(
-                get: { settings.model(for: id) }, set: { settings.setModel($0, for: id) }))
+            TextField("Model", text: Binding(
+                get: { settings.model(for: id) }, set: { settings.setModel($0, for: id) }),
+                prompt: Text(modelPlaceholder(id)))
         }
         if let test = model.testResult[id] {
             Text(test).font(.caption).foregroundStyle(test.hasPrefix("✓") ? .green : .red).textSelection(.enabled)
@@ -223,11 +235,11 @@ struct BackendSettings: View {
 
     private func modelPlaceholder(_ id: BackendID) -> String {
         switch id {
-        case .claude: return "Model (optional, e.g. haiku, sonnet)"
-        case .codex: return "Model (optional, e.g. gpt-5-mini)"
-        case .gemini: return "Model (optional, e.g. gemini-2.5-flash)"
-        case .ollama: return "Model (optional, default: first installed)"
-        case .openAICompatible: return "Model (optional, default: first loaded)"
+        case .claude: return "Default (e.g. haiku, sonnet)"
+        case .codex: return "Default (e.g. gpt-5-mini)"
+        case .gemini: return "Default (e.g. gemini-2.5-flash)"
+        case .ollama: return "First installed model"
+        case .openAICompatible: return "First loaded model"
         case .apple: return ""
         }
     }
@@ -253,7 +265,7 @@ struct PresetSettings: View {
                         Image(systemName: preset.icon).frame(width: 20).foregroundStyle(Brand.gradient)
                         VStack(alignment: .leading) {
                             Text(preset.name)
-                            Text("\(preset.mode == .fix ? "Accept / reject changes" : "Before / after") · \(GrammableEngine.resolveBackend(for: preset, default: settings.defaultBackend).displayName)\(preset.isBuiltIn ? " · built-in" : "")")
+                            Text("\(preset.mode == .fix ? "Accept / reject changes" : "Before / after") · \(GrammableEngine.resolveBackend(for: preset, default: settings.defaultBackend).displayName)\(preset.isBuiltIn ? " · built-in" : BuiltInPresets.all.contains { $0.id == preset.id } ? " · customized" : "")")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -333,10 +345,11 @@ struct PrivacySettings: View {
                     HStack {
                         if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: id) {
                             Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().frame(width: 16, height: 16)
-                            Text(FileManager.default.displayName(atPath: url.path))
+                            Text(FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: ""))
                         } else {
-                            Image(systemName: "app.dashed").frame(width: 16)
-                            Text(id)
+                            Image(systemName: "app.dashed").frame(width: 16).foregroundStyle(.tertiary)
+                            Text(Self.knownNames[id] ?? id)
+                            Text("not installed").font(.caption2).foregroundStyle(.tertiary)
                         }
                         Spacer()
                         Text(id).font(.caption).foregroundStyle(.tertiary)
@@ -368,6 +381,13 @@ struct PrivacySettings: View {
         }
         .padding()
     }
+
+    static let knownNames: [String: String] = [
+        "com.googlecode.iterm2": "iTerm2", "com.mitchellh.ghostty": "Ghostty", "dev.warp.Warp-Stable": "Warp",
+        "net.kovidgoyal.kitty": "kitty", "io.alacritty": "Alacritty", "com.1password.1password": "1Password",
+        "com.agilebits.onepassword7": "1Password 7", "com.bitwarden.desktop": "Bitwarden",
+        "com.apple.Passwords": "Passwords", "com.apple.keychainaccess": "Keychain Access",
+    ]
 
     private var runningApps: [NSRunningApplication] {
         NSWorkspace.shared.runningApplications

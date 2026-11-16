@@ -12,6 +12,16 @@ public struct EngineResult: Sendable {
     public let duration: TimeInterval
 
     public var isUnchanged: Bool { diff.changes.isEmpty }
+
+    public init(preset: Preset, backend: BackendID, original: String, suggestion: String,
+                diff: TextDiff, duration: TimeInterval) {
+        self.preset = preset
+        self.backend = backend
+        self.original = original
+        self.suggestion = suggestion
+        self.diff = diff
+        self.duration = duration
+    }
 }
 
 /// Runs a preset against text with the right backend and post-processing.

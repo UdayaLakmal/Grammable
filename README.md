@@ -27,6 +27,11 @@ powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, 
 
 </div>
 
+<p align="center">
+  <img src="docs/screenshots/menu.png" width="300" alt="Grammable actions menu: fix grammar, change tone, rewrite, format" />
+  <img src="docs/screenshots/review-grammar.png" width="500" alt="Grammable grammar check: accept or reject each correction" />
+</p>
+
 ---
 
 ## Why Grammable?
@@ -83,6 +88,10 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
    - *Rewrites* → an editable before/after view.
 5. Press **Replace** (`↩`) to put the text back in place, or **Copy**.
 
+<p align="center">
+  <img src="docs/screenshots/review-rewrite-dark.png" width="480" alt="Grammable tone rewrite with on-device badge, dark mode" />
+</p>
+
 ## Supported AI backends
 
 Grammable never bundles a model or calls its own server. It drives tools **you already have installed**:
@@ -97,6 +106,8 @@ Grammable never bundles a model or calls its own server. It drives tools **you a
 | **Apple Intelligence** | 🔒 **Stays on your Mac** | macOS 26+, Apple silicon, Apple Intelligence on, built with Xcode 26+ | Free |
 
 > ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI and Gemini CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI or Google using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio** or **Apple Intelligence**. Every result shows an **On-device** or **Cloud** badge so you always know.
+
+<p align="center"><img src="docs/screenshots/settings-backends.png" width="560" alt="Grammable AI backend settings" /></p>
 
 Grammable finds the CLIs automatically (Homebrew, npm, bun, volta, nvm, `~/.local/bin`…). You can also set a custom path and model for each backend in **Settings → AI Backends**, and test it with one click.
 
@@ -170,6 +181,7 @@ The app binary doubles as a CLI — useful for scripts, Automator and Shortcuts:
 G=/Applications/Grammable.app/Contents/MacOS/Grammable
 $G --status                                    # which backends are available
 $G --list                                      # list presets
+$G --render-ui ~/Desktop/grammable-ui          # render every screen to PNG
 $G --run fix-grammar --diff "i has went home"  # → I went home.
 pbpaste | $G --run professional --backend ollama | pbcopy
 ```

@@ -276,6 +276,10 @@ struct ReviewView: View {
                         removed.foregroundColor = .red.opacity(0.7)
                         out += removed
                     }
+                    if !c.original.isEmpty && !c.replacement.isEmpty
+                        && !(c.original.last?.isWhitespace ?? false) {
+                        out += AttributedString("\u{2009}") // thin space between old and new
+                    }
                     if !c.replacement.isEmpty {
                         var added = AttributedString(c.replacement)
                         added.foregroundColor = .green
@@ -321,7 +325,7 @@ struct ReviewView: View {
         let text = result.suggestion
         let wrapped = text.split(separator: "\n", omittingEmptySubsequences: false)
             .reduce(0) { $0 + max(1, Int(ceil(Double($1.count) / 62.0))) }
-        return min(260, max(90, CGFloat(wrapped) * 17 + 18))
+        return min(260, max(56, CGFloat(wrapped) * 17 + 22))
     }
 
     private var footer: some View {
@@ -336,11 +340,15 @@ struct ReviewView: View {
             Button("Copy") { coordinator.copy() }
                 .keyboardShortcut("c", modifiers: [.command, .shift])
             if result.isUnchanged {
-                Button("Done") { coordinator.dismiss() }.keyboardShortcut(.defaultAction)
+                Button("Done") { coordinator.dismiss() }
+                    .buttonStyle(.borderedProminent).tint(Brand.violet)
+                    .keyboardShortcut(.defaultAction)
             } else {
                 Button(coordinator.context?.isEditable == false ? "Paste over selection" : "Replace") {
                     coordinator.replace()
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(Brand.violet)
                 .keyboardShortcut(.defaultAction)
                 .disabled(result.preset.mode == .fix && coordinator.accepted.isEmpty)
             }

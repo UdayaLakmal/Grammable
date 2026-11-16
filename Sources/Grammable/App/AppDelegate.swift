@@ -21,6 +21,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         Self.shared = self
         setUpStatusItem()
+        NSLog("Grammable %@ started. Accessibility trusted: %@", Brand.version,
+              AccessibilityService.isTrusted ? "yes" : "no")
 
         let popup = PopupCoordinator.shared
         monitor.onSelection = { context in
@@ -61,12 +63,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    /// Opening Grammable again (Finder, Spotlight, Launchpad) shows Settings. This matters because
+    /// macOS hides menu bar icons behind the notch when the menu bar is full.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        openSettings(tab: .general)
+        return true
+    }
+
     /// Global monitors need Accessibility; restart them once the user grants it.
     private func watchForTrust() {
         trustTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] timer in
             Task { @MainActor in
                 guard AccessibilityService.isTrusted else { return }
                 timer.invalidate()
+                NSLog("Grammable: Accessibility granted, starting selection monitor")
                 self?.monitor.start()
                 self?.statusItem.menu = self?.buildMenu()
             }
@@ -114,6 +124,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = Brand.menuBarImage(enabled: settings.isEnabled)
         statusItem.button?.toolTip = "Grammable"
+        statusItem.autosaveName = "GrammableStatusItem"
         statusItem.menu = buildMenu()
     }
 

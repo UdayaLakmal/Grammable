@@ -1,6 +1,6 @@
 // Grammable — Copyright (C) 2026 Udaya Lakmal — GPL-3.0-or-later
 
-import Foundation
+import AppKit
 import GrammableCore
 
 /// Scriptable interface — handy for testing presets and for shell / Shortcuts workflows.
@@ -41,6 +41,11 @@ enum CommandLineTool {
             }
         case "--run":
             return runPreset(Array(args.dropFirst()))
+        case "--render-ui":
+            let dir = URL(fileURLWithPath: args.dropFirst().first ?? "ui-snapshots")
+            _ = NSApplication.shared
+            NSApp.setActivationPolicy(.prohibited)
+            return MainActor.assumeIsolated { UISnapshot.renderAll(to: dir) }
         default:
             print(usage)
             return args.first == "--help" ? 0 : 64

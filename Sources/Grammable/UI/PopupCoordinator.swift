@@ -213,6 +213,18 @@ final class PopupCoordinator: ObservableObject {
         }
     }
 
+    /// Puts the coordinator into a given state without showing the panel (used by `--render-ui`).
+    func loadPreview(phase: Phase, context: SelectionContext, result: EngineResult? = nil) {
+        self.context = context
+        self.result = result
+        if let result {
+            accepted = Set(result.diff.changes.map(\.id))
+            editedSuggestion = result.suggestion
+        }
+        reloadPresets()
+        self.phase = phase
+    }
+
     // MARK: Layout
 
     /// Sizes the panel to its SwiftUI content and places it next to the selection, on screen.
