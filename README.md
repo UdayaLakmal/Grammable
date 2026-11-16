@@ -16,6 +16,7 @@ powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, 
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange?logo=swift)](Package.swift)
 [![Build](https://github.com/UdayaLakmal/Grammable/actions/workflows/ci.yml/badge.svg)](https://github.com/UdayaLakmal/Grammable/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/UdayaLakmal/Grammable?include_prereleases)](https://github.com/UdayaLakmal/Grammable/releases)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Grammable-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/udayalakmal)
 
 [**Download**](https://github.com/UdayaLakmal/Grammable/releases/latest) ·
 [Features](#features) ·
@@ -206,7 +207,7 @@ pbpaste | $G --run professional --backend ollama | pbcopy
 <details>
 <summary><b>Is Grammable really free? What's the catch?</b></summary>
 
-Yes — it's GPL-3.0 open source. There's no paid tier, no account and no server costs, because the AI runs through tools you already have. If it saves you a subscription, consider [sponsoring the project](https://github.com/sponsors/UdayaLakmal) ❤️.
+Yes — it's GPL-3.0 open source. There's no paid tier, no account and no server costs, because the AI runs through tools you already have. If it saves you a subscription, consider [buying me a coffee on Ko-fi](https://ko-fi.com/udayalakmal) ☕.
 </details>
 
 <details>
@@ -269,7 +270,7 @@ Bug reports, presets and pull requests are very welcome — see [CONTRIBUTING.md
 Grammable is free and always will be. If it's useful to you:
 
 - ⭐ **Star this repo** — it helps others find it
-- ❤️ [**Sponsor on GitHub**](https://github.com/sponsors/UdayaLakmal)
+- ☕ [**Buy me a coffee on Ko-fi**](https://ko-fi.com/udayalakmal)
 - 🐛 [Report bugs & request features](https://github.com/UdayaLakmal/Grammable/issues)
 
 ## License

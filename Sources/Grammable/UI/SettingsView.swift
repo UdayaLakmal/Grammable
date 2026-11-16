@@ -412,7 +412,7 @@ struct AboutView: View {
                 Link("Check for updates", destination: Brand.releasesURL)
             }
             Link(destination: Brand.sponsorURL) {
-                Label("Support Grammable", systemImage: "heart.fill")
+                Label("Buy me a coffee on Ko-fi", systemImage: "cup.and.saucer.fill")
             }
             .buttonStyle(.borderedProminent)
             .tint(.pink)

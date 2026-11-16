@@ -180,7 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         menu.addItem(item("Settings…", #selector(openGeneralSettings), key: ","))
         menu.addItem(item("Check for Updates…", #selector(openReleases)))
-        menu.addItem(item("♥ Support Grammable", #selector(openSponsor)))
+        menu.addItem(item("☕ Support Grammable on Ko-fi", #selector(openSponsor)))
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit Grammable", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
     }

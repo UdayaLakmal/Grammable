@@ -16,7 +16,7 @@ enum Brand {
     static let repositoryURL = URL(string: "https://github.com/UdayaLakmal/Grammable")!
     static let releasesURL = URL(string: "https://github.com/UdayaLakmal/Grammable/releases")!
     static let issuesURL = URL(string: "https://github.com/UdayaLakmal/Grammable/issues")!
-    static let sponsorURL = URL(string: "https://github.com/sponsors/UdayaLakmal")!
+    static let sponsorURL = URL(string: "https://ko-fi.com/udayalakmal")!
     static let presetsURL = URL(string: "https://github.com/UdayaLakmal/Grammable/tree/main/presets")!
 
     static var version: String {
