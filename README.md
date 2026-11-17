@@ -19,6 +19,7 @@ powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Grammable-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/udayalakmal)
 
 [**Download**](https://github.com/UdayaLakmal/Grammable/releases/latest) ·
+`brew install --cask udayalakmal/tap/grammable` ·
 [Features](#features) ·
 [How it works](#how-it-works) ·
 [AI backends](#supported-ai-backends) ·
@@ -114,7 +115,16 @@ Grammable finds the CLIs automatically (Homebrew, npm, bun, volta, nvm, `~/.loca
 
 ## Installation
 
-### Download (recommended)
+### Homebrew (recommended)
+
+```bash
+brew install --cask udayalakmal/tap/grammable
+```
+
+Then open **Grammable** from Applications and allow **Accessibility** when asked.
+Upgrade with `brew upgrade --cask grammable`. On Homebrew 7, if you're asked to trust the tap, run `brew trust udayalakmal/tap` first.
+
+### Download
 
 1. Download the latest **`Grammable-x.y.z.zip`** from [**Releases**](https://github.com/UdayaLakmal/Grammable/releases/latest).
 2. Unzip and drag **Grammable.app** to **Applications**.
@@ -255,7 +265,8 @@ Local models on Apple silicon (Ollama with a small model such as `llama3.2` or `
 ## Roadmap
 
 - [ ] Customizable keyboard shortcut
-- [ ] Homebrew cask (`brew install --cask grammable`)
+- [x] Homebrew tap (`brew install --cask udayalakmal/tap/grammable`)
+- [ ] Official Homebrew cask (`brew install --cask grammable`, needs notarized builds)
 - [ ] Signed & notarized releases
 - [ ] Preset chaining (e.g. Fix Grammar → Make Concise)
 - [ ] Explanations for each grammar fix
