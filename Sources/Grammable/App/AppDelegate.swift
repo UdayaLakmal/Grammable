@@ -46,11 +46,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             let frame = self.statusItem.button?.window?.frame ?? .zero
             DiagnosticLog.log("menu bar icon at x=\(Int(frame.minX)) hidden behind notch: \(Self.isStatusItemHidden)")
-            if Self.isStatusItemHidden { self.openSettings(tab: .general) }
         }
-        if !settings.hasCompletedOnboarding || !AccessibilityService.isTrusted {
+
+        // Settings opens on its own only the very first time. After that Grammable starts
+        // quietly in the menu bar (for example at login); open the app again to reach Settings.
+        if !settings.hasLaunchedBefore {
+            settings.hasLaunchedBefore = true
+            LoginItem.enable()
             openSettings(tab: .general)
             if !AccessibilityService.isTrusted { AccessibilityService.requestTrust() }
+        } else {
+            LoginItem.refreshLocation()
         }
 
         // Pick a sensible default backend on first launch: the first one that is installed.

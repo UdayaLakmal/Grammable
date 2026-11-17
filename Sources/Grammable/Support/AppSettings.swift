@@ -21,6 +21,7 @@ final class AppSettings: ObservableObject {
         static let timeout = "timeout"
         static let excludedBundleIDs = "excludedBundleIDs"
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
+        static let hasLaunchedBefore = "hasLaunchedBefore"
     }
 
     static let defaultExcludedBundleIDs = [
@@ -64,6 +65,12 @@ final class AppSettings: ObservableObject {
         timeout = defaults.double(forKey: Key.timeout)
         excludedBundleIDs = defaults.stringArray(forKey: Key.excludedBundleIDs) ?? Self.defaultExcludedBundleIDs
         hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
+    }
+
+    /// False only on the very first launch. Settings opens automatically just that once.
+    var hasLaunchedBefore: Bool {
+        get { defaults.bool(forKey: Key.hasLaunchedBefore) }
+        set { defaults.set(newValue, forKey: Key.hasLaunchedBefore) }
     }
 
     /// Whether the user has explicitly chosen a default backend yet.
