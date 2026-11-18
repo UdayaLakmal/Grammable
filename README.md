@@ -12,7 +12,7 @@ powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, 
 **No subscription. No account. No servers. 100% free.**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black?logo=apple)](#requirements)
+[![macOS 12+](https://img.shields.io/badge/macOS-12%2B-black?logo=apple)](#requirements)
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange?logo=swift)](Package.swift)
 [![Build](https://github.com/UdayaLakmal/Grammable/actions/workflows/ci.yml/badge.svg)](https://github.com/UdayaLakmal/Grammable/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/UdayaLakmal/Grammable?include_prereleases)](https://github.com/UdayaLakmal/Grammable/releases)
@@ -208,7 +208,7 @@ pbpaste | $G --run professional --backend ollama | pbcopy
 
 ## Requirements
 
-- macOS 13 Ventura or later (Apple silicon or Intel)
+- macOS 12 Monterey or later (Apple silicon or Intel)
 - Accessibility permission
 - At least one AI backend from the table above
 

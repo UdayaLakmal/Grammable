@@ -1,7 +1,6 @@
 // Grammable — Copyright (C) 2026 Udaya Lakmal — GPL-3.0-or-later
 
 import AppKit
-import ServiceManagement
 import SwiftUI
 import GrammableCore
 
@@ -77,7 +76,7 @@ struct GeneralSettings: View {
     @ObservedObject private var settings = AppSettings.shared
     @State private var trusted = AccessibilityService.isTrusted
     @State private var iconHidden = false
-    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var launchAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
     private let timer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
 
@@ -139,13 +138,13 @@ struct GeneralSettings: View {
                     .disabled(!settings.isEnabled)
                 Stepper("Minimum selection: \(settings.minSelectionLength) characters",
                         value: $settings.minSelectionLength, in: 1...200)
-                LabeledContent("Menu bar icon") {
+                SettingRow("Menu bar icon") {
                     Text("Can't see it? A full menu bar hides icons behind the notch. Hold ⌘ and drag icons to make room, or open Grammable again to reach Settings.")
                         .font(.caption).foregroundStyle(.secondary)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: 330, alignment: .trailing)
                 }
-                LabeledContent("Keyboard shortcut") {
+                SettingRow("Keyboard shortcut") {
                     Text(HotKey.defaultDisplay).font(.system(.body, design: .monospaced))
                         .padding(.horizontal, 8).padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 5).fill(Color.primary.opacity(0.08)))
@@ -154,18 +153,18 @@ struct GeneralSettings: View {
                     get: { launchAtLogin },
                     set: { newValue in
                         do {
-                            if newValue { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
+                            try LoginItem.setEnabled(newValue)
                             loginError = nil
                         } catch {
                             loginError = error.localizedDescription
                         }
-                        launchAtLogin = SMAppService.mainApp.status == .enabled
+                        launchAtLogin = LoginItem.isEnabled
                     }
                 ))
                 if let loginError { Text(loginError).font(.caption).foregroundStyle(.red) }
             }
         }
-        .formStyle(.grouped)
+        .groupedFormStyle()
         .onReceive(timer) { _ in
             trusted = AccessibilityService.isTrusted
             iconHidden = AppDelegate.isStatusItemHidden
@@ -201,7 +200,7 @@ struct BackendSettings: View {
                 }
             }
         }
-        .formStyle(.grouped)
+        .groupedFormStyle()
         .toolbar {
             Button { model.refresh() } label: { Label("Refresh", systemImage: "arrow.clockwise") }
         }

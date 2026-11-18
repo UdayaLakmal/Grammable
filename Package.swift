@@ -6,7 +6,7 @@ import PackageDescription
 
 let package = Package(
     name: "Grammable",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v12)],
     products: [
         .executable(name: "Grammable", targets: ["Grammable"]),
         .library(name: "GrammableCore", targets: ["GrammableCore"]),

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 — 2026-11-18
+
+- Runs on macOS 12 Monterey (previously macOS 13 Ventura or later)
+- On Monterey, launch at login uses a small launch agent in `~/Library/LaunchAgents`, removed when you turn the option off
+
 ## 0.1.1 — 2026-11-17
 
 - Grammable now starts at login by default, quietly in the menu bar

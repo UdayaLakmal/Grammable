@@ -154,7 +154,7 @@ struct ActionMenuView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .keyboardShortcut(index < 9 ? KeyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: []) : nil)
+        .numberShortcut(index)
         .onHover { if $0 { hovered = preset.id } else if hovered == preset.id { hovered = nil } }
     }
 }
@@ -301,7 +301,7 @@ struct ReviewView: View {
         VStack(alignment: .leading, spacing: 8) {
             TextEditor(text: $coordinator.editedSuggestion)
                 .font(.system(size: 13))
-                .scrollContentBackground(.hidden)
+                .hiddenScrollBackground()
                 .padding(6)
                 .frame(height: editorHeight)
                 .background(RoundedRectangle(cornerRadius: 8).fill(Color.primary.opacity(0.04)))
