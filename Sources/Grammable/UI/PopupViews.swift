@@ -98,6 +98,14 @@ struct ActionMenuView: View {
 
             Divider().padding(.horizontal, 8)
 
+            if let detail = coordinator.missingBackendDetail {
+                NoAIBanner(backend: coordinator.defaultBackend, detail: detail) {
+                    coordinator.dismiss()
+                    AppDelegate.shared?.openSettings(tab: .backends)
+                }
+                .padding(.horizontal, 8).padding(.top, 8)
+            }
+
             VStack(spacing: 1) {
                 ForEach(Array(coordinator.presets.enumerated()), id: \.element.id) { index, preset in
                     row(preset, index: index)
@@ -156,6 +164,30 @@ struct ActionMenuView: View {
         .buttonStyle(.plain)
         .numberShortcut(index)
         .onHover { if $0 { hovered = preset.id } else if hovered == preset.id { hovered = nil } }
+    }
+}
+
+/// Shown at the top of the menu when the default AI isn't installed or running.
+struct NoAIBanner: View {
+    let backend: BackendID
+    let detail: String
+    let openSettings: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                Text("\(backend.displayName) isn’t set up").font(.system(size: 12, weight: .semibold))
+            }
+            Text("Grammable uses an AI you already have. Install one (free options: Ollama, LM Studio) or pick another in AI Backends.")
+                .font(.system(size: 11)).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Set Up AI…", action: openSettings).controlSize(.small)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange.opacity(0.12)))
+        .help(detail)
     }
 }
 

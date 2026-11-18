@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3 — 2026-11-18
+
+- Monterey: Settings tabs now scroll and start at the top, so the tab bar stays visible
+- Monterey: the G button and menu respond to the first click
+- The action menu says when your default AI isn't installed or running, with a Set Up AI button
+
 ## 0.1.2 — 2026-11-18
 
 - Runs on macOS 12 Monterey (previously macOS 13 Ventura or later)

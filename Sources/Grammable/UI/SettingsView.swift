@@ -136,8 +136,11 @@ struct GeneralSettings: View {
                 Toggle("Enable Grammable", isOn: $settings.isEnabled)
                 Toggle("Show the G button when I select text", isOn: $settings.popupOnSelection)
                     .disabled(!settings.isEnabled)
-                Stepper("Minimum selection: \(settings.minSelectionLength) characters",
-                        value: $settings.minSelectionLength, in: 1...200)
+                HStack {
+                    Text("Minimum selection: \(settings.minSelectionLength) characters")
+                    Spacer()
+                    Stepper("Minimum selection", value: $settings.minSelectionLength, in: 1...200).labelsHidden()
+                }
                 SettingRow("Menu bar icon") {
                     Text("Can't see it? A full menu bar hides icons behind the notch. Hold ⌘ and drag icons to make room, or open Grammable again to reach Settings.")
                         .font(.caption).foregroundStyle(.secondary)

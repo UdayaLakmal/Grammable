@@ -30,6 +30,12 @@ final class FloatingPanel: NSPanel {
     override func cancelOperation(_ sender: Any?) { PopupCoordinator.shared.dismiss() } // Esc
 }
 
+/// Lets the very first click on the floating panel press the button under the mouse
+/// (macOS 12 otherwise spends that click making the panel key).
+final class FirstClickHostingView<Content: View>: NSHostingView<Content> {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+}
+
 /// Drives the popup: trigger button → action menu → working → review.
 @MainActor
 final class PopupCoordinator: ObservableObject {
@@ -49,6 +55,8 @@ final class PopupCoordinator: ObservableObject {
     @Published private(set) var result: EngineResult?
     @Published var accepted: Set<Int> = []
     @Published var editedSuggestion = ""
+    /// Set when the default AI can't be used, so the menu can say how to set one up.
+    @Published private(set) var missingBackendDetail: String?
     @Published var isHoveringTrigger = false { didSet { if isHoveringTrigger { autoHide?.cancel() } else { scheduleAutoHide() } } }
 
     private(set) var context: SelectionContext?
@@ -58,7 +66,7 @@ final class PopupCoordinator: ObservableObject {
     private let panel = FloatingPanel()
     private let settings = AppSettings.shared
     private let store = PresetStore()
-    private lazy var hostingView = NSHostingView(rootView: PopupRootView(coordinator: self))
+    private lazy var hostingView = FirstClickHostingView(rootView: PopupRootView(coordinator: self))
 
     private init() {
         panel.contentView = hostingView
@@ -117,6 +125,22 @@ final class PopupCoordinator: ObservableObject {
         reloadPresets()
         phase = .menu
         layout()
+        checkDefaultBackend()
+    }
+
+    private func checkDefaultBackend() {
+        let id = settings.defaultBackend
+        let configuration = settings.backendConfiguration
+        Task { [weak self] in
+            let status = await BackendFactory.make(id, configuration: configuration).checkAvailability()
+            guard let self, self.phase == .menu else { return }
+            let detail = status.isAvailable ? nil : status.detail
+            if detail != self.missingBackendDetail {
+                self.missingBackendDetail = detail
+                if detail != nil { DiagnosticLog.log("default AI unavailable: \(id.rawValue)") }
+                self.layout()
+            }
+        }
     }
 
     // MARK: Running

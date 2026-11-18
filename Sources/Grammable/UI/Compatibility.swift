@@ -4,19 +4,32 @@ import SwiftUI
 
 // SwiftUI features that arrived in macOS 13, with simple stand-ins on macOS 12 Monterey.
 
+enum Compat {
+    /// True on macOS 13+. Set GRAMMABLE_LEGACY_UI=1 to preview the macOS 12 layout on a newer Mac.
+    static let modernUI: Bool = {
+        if ProcessInfo.processInfo.environment["GRAMMABLE_LEGACY_UI"] != nil { return false }
+        if #available(macOS 13.0, *) { return true }
+        return false
+    }()
+}
+
 extension View {
-    /// Grouped settings form on macOS 13+, a padded plain form on macOS 12.
+    /// Grouped settings form on macOS 13+. On macOS 12 a Form neither scrolls nor groups,
+    /// so it is placed in a scroll view, aligned to the top.
     @ViewBuilder func groupedFormStyle() -> some View {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, *), Compat.modernUI {
             formStyle(.grouped)
         } else {
-            padding(20)
+            ScrollView {
+                padding(.horizontal, 24).padding(.vertical, 20)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
         }
     }
 
     /// Lets a custom background show through a TextEditor (macOS 13+).
     @ViewBuilder func hiddenScrollBackground() -> some View {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, *), Compat.modernUI {
             scrollContentBackground(.hidden)
         } else {
             self
