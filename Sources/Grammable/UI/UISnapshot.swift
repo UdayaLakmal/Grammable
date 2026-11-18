@@ -42,6 +42,15 @@ enum UISnapshot {
             }
         }
 
+        // Sample backend state, so screenshots show the setup flow and never this Mac's paths.
+        var demo: [BackendID: BackendStatus] = [:]
+        for id in BackendID.allCases { demo[id] = .missing("Not found. \(id.setupHint)") }
+        demo[.claude] = .available("/opt/homebrew/bin/claude")
+        demo[.ollama] = .missing("Ollama is running but has no models. Run: ollama pull llama3.2")
+        demo[.builtIn] = .available("Built into macOS · spelling and grammar fixes only")
+        BackendStatusModel.demoStatuses = demo
+        OfflineAISetupModel.demoStage = .noModel
+
         let navigation = SettingsNavigation()
         for tab in [SettingsTab.general, .backends, .presets, .privacy, .about] {
             navigation.tab = tab

@@ -20,7 +20,11 @@ final class BackendStatusModel: ObservableObject {
     @Published var testResult: [BackendID: String] = [:]
     @Published var testing: Set<BackendID> = []
 
+    /// Sample statuses for screenshots (`--render-ui`), so they never show this Mac's paths.
+    static var demoStatuses: [BackendID: BackendStatus]?
+
     func refresh() {
+        if let demo = Self.demoStatuses { statuses = demo; return }
         isRefreshing = true
         ShellEnvironment.shared.reset()
         let config = AppSettings.shared.backendConfiguration

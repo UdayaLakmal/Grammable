@@ -30,7 +30,11 @@ final class OfflineAISetupModel: ObservableObject {
 
     /// Re-checks Ollama. Called on appear and every few seconds while the AI Backends tab is open,
     /// so installing or opening Ollama in another window updates this card on its own.
+    /// Fixed stage for screenshots (`--render-ui`).
+    static var demoStage: Stage?
+
     func refresh() {
+        if let demo = Self.demoStage { stage = demo; return }
         guard !isDownloading else { return }
         let url = settings.ollamaURL
         Task {
