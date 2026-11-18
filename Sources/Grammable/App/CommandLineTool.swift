@@ -11,7 +11,7 @@ import GrammableCore
 enum CommandLineTool {
 
     static let usage = """
-    Grammable — free AI grammar checker & rewriter for macOS
+    Grammable — free AI writing assistant for macOS
 
     Usage:
       Grammable --list                                    List presets

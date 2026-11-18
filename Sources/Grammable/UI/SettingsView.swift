@@ -454,7 +454,7 @@ struct AboutView: View {
             Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 96, height: 96)
             Text("Grammable").font(.system(size: 26, weight: .bold, design: .rounded)).foregroundStyle(Brand.gradient)
             Text("Version \(Brand.version)").foregroundStyle(.secondary)
-            Text("Free, open-source AI grammar checker & rewriter for macOS.\nNo subscription. No account. Uses the AI you already have.")
+            Text("Free, open-source AI writing assistant for macOS.\nNo subscription. No account. Uses the AI you already have.")
                 .multilineTextAlignment(.center)
             HStack(spacing: 16) {
                 Link("GitHub", destination: Brand.repositoryURL)

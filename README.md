@@ -4,7 +4,7 @@
 
 # Grammable
 
-### Free, open-source AI grammar checker & rewriter for macOS
+### Free, open-source AI writing assistant for macOS
 
 **Fix grammar and spelling, change tone, rewrite and format text in _any_ Mac app —
 powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Antigravity, Devin, Ollama, LM Studio or Apple Intelligence.
@@ -56,9 +56,11 @@ No AI yet? Grammar fixes work out of the box, and a free offline AI is three cli
 
 ## Why Grammable?
 
-Paying a monthly subscription for a grammar checker when you **already pay for Claude, ChatGPT or Gemini** — or can run a free local model — makes no sense.
+You **already pay for Claude, ChatGPT or Gemini**, or can run a free local model. Why pay another monthly subscription just to write better?
 
-Grammable is a tiny **menu bar app** that turns the AI tools already installed on your Mac into a **system-wide writing assistant** — without the extra subscription, the browser extension or sending your writing to yet another company.
+Grammable is **more than a grammar checker**. Select text in any app and fix it, rewrite it, change its tone, shorten it, or turn it into bullet points or an email, all with **your own AI** and **your own prompts**.
+
+It's a tiny **menu bar app** that turns the AI tools already installed on your Mac into a **system-wide writing assistant** — without the extra subscription, the browser extension or sending your writing to yet another company.
 
 | | Grammable | Typical subscription writing assistants |
 |---|---|---|

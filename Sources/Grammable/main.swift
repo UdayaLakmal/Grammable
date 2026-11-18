@@ -1,4 +1,4 @@
-// Grammable — free, open-source AI grammar checker & rewriter for macOS.
+// Grammable — free, open-source AI writing assistant for macOS.
 // Copyright (C) 2026 Udaya Lakmal
 //
 // This program is free software: you can redistribute it and/or modify it under the

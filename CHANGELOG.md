@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Described as an AI writing assistant (not just a grammar checker) in the About tab and `--help`
+
 ## 0.1.6 — 2026-11-18
 
 - Settings › Privacy now excludes only Terminal and Keychain Access by default; add any other app yourself
