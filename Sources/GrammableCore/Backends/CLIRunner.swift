@@ -104,6 +104,89 @@ public enum CLIRunner {
         }
     }
 
+    /// What a line handler wants after reading one line of streamed output.
+    public enum LineDecision: Sendable {
+        case keepReading
+        case finished(String)
+        case failed(BackendError)
+    }
+
+    /// Runs a CLI that streams one JSON event per line and returns as soon as `handle` has the answer.
+    ///
+    /// Once the answer is in, the process is left to exit on its own while its output is drained in the
+    /// background. Some CLIs (Antigravity) stall their next run when they are killed mid-turn.
+    public static func runStreaming(
+        executable: String,
+        arguments: [String],
+        timeout: TimeInterval,
+        handle: @escaping @Sendable (String) -> LineDecision
+    ) async throws -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: executable)
+        process.arguments = arguments
+        process.environment = ShellEnvironment.shared.environment
+        process.currentDirectoryURL = workingDirectory
+        let outPipe = Pipe(), errPipe = Pipe()
+        process.standardOutput = outPipe
+        process.standardError = errPipe
+        process.standardInput = FileHandle.nullDevice
+
+        let stderrBox = StderrBox()
+        errPipe.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            if data.isEmpty { handle.readabilityHandler = nil } else { stderrBox.append(data) }
+        }
+        do {
+            try process.run()
+        } catch {
+            throw BackendError.failed("Could not start \(executable): \(error.localizedDescription)")
+        }
+
+        let lines = outPipe.fileHandleForReading.bytes.lines
+        let reader = Task<String, Error> {
+            var iterator = lines.makeAsyncIterator()
+            while let line = try await iterator.next() {
+                switch handle(line) {
+                case .keepReading: continue
+                case .finished(let answer):
+                    // Let the CLI wrap up by itself; keep draining so it never blocks on a full pipe.
+                    Task.detached {
+                        while (try? await iterator.next()) != nil {}
+                    }
+                    return answer
+                case .failed(let error):
+                    throw error
+                }
+            }
+            process.waitUntilExit()
+            let tail = stderrBox.tail
+            throw BackendError.failed(
+                "\(URL(fileURLWithPath: executable).lastPathComponent) exited with code \(process.terminationStatus) before answering." +
+                (tail.isEmpty ? "" : "\n\(tail)"))
+        }
+
+        return try await withTaskCancellationHandler {
+            try await withThrowingTaskGroup(of: String.self) { group in
+                group.addTask { try await reader.value }
+                group.addTask {
+                    try await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                    throw BackendError.timedOut(timeout)
+                }
+                defer { group.cancelAll() }
+                do {
+                    return try await group.next()!
+                } catch {
+                    reader.cancel()
+                    if process.isRunning { process.terminate() }
+                    throw error
+                }
+            }
+        } onCancel: {
+            reader.cancel()
+            if process.isRunning { process.terminate() }
+        }
+    }
+
     /// Turns a non-zero exit into a readable error, keeping the most useful stderr lines.
     public static func failure(_ result: CLIResult, tool: String) -> BackendError {
         let lines = (result.stderr.isEmpty ? result.stdout : result.stderr)
@@ -132,5 +215,20 @@ private final class ProcessBox: @unchecked Sendable {
         let p = process
         lock.unlock()
         if let p, p.isRunning { p.terminate() }
+    }
+}
+
+/// Collects the end of a CLI's error output for messages.
+private final class StderrBox: @unchecked Sendable {
+    private let lock = NSLock()
+    private var data = Data()
+    func append(_ more: Data) {
+        lock.lock(); data.append(more); if data.count > 8192 { data = data.suffix(4096) }; lock.unlock()
+    }
+    var tail: String {
+        lock.lock(); defer { lock.unlock() }
+        let lines = String(decoding: data, as: UTF8.self).components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        return lines.suffix(3).joined(separator: "\n")
     }
 }

@@ -5,6 +5,8 @@
 - New backends: **Antigravity CLI** (`agy`) and **Devin CLI** (`devin`), on your own accounts
 - Settings › AI Backends explains that each service's command-line tool is needed (not only its desktop app), lists the install commands when none is set up, and flags apps installed without their CLI
 - Devin shows "not signed in" in Settings instead of failing on first use
+- Antigravity answers are read from its streamed output as soon as they're ready, so a turn that `agy` keeps open no longer runs into the time limit
+- Terminal control codes that some CLIs print are removed from answers
 
 ## 0.1.4 — 2026-11-18
 

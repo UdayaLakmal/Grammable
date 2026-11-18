@@ -74,7 +74,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "Runs your installed Claude Code CLI. Text is sent to Anthropic under your own Claude account."
         case .codex: return "Runs your installed Codex CLI. Text is sent to OpenAI under your own ChatGPT / OpenAI account."
         case .gemini: return "Runs your installed Gemini CLI. Text is sent to Google under your own Google account."
-        case .antigravity: return "Runs Google's Antigravity command-line tool (agy). Text is sent to Google under your own Antigravity account."
+        case .antigravity: return "Runs Google's Antigravity command-line tool (agy). Text is sent to Google under your own Antigravity account. Slower than the others (often 10–70 seconds), since it works as a full agent."
         case .devin: return "Runs Cognition's Devin command-line tool. Text is sent to Cognition under your own Devin account and counts toward your Devin plan."
         case .ollama: return "Runs a model on this Mac through Ollama. Fully offline."
         case .openAICompatible: return "Talks to a local OpenAI-compatible server such as LM Studio, Jan or llama.cpp. Offline when the server is local."

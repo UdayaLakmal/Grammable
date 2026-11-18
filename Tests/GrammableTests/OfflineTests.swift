@@ -85,6 +85,28 @@ final class OfflineTests: XCTestCase {
         XCTAssertEqual(result.backend, .builtIn)
     }
 
+    func testAntigravityStreamReturnsAnswerWhenResponseStepIsDone() {
+        let parser = AntigravityStreamParser()
+        func step(_ state: String, _ type: String, _ delta: String = "") -> String {
+            "{\"event\":\"step_update\",\"step_update\":{\"state\":\"\(state)\",\"step_type\":\"\(type)\",\"text_delta\":\"\(delta)\"}}"
+        }
+        if case .keepReading = parser.handle("{\"event\":\"init\"}") {} else { XCTFail() }
+        if case .keepReading = parser.handle(step("DONE", "user_input")) {} else { XCTFail() }
+        // A response step that ends with no text (thinking only) is skipped.
+        if case .keepReading = parser.handle(step("DONE", "agent_response")) {} else { XCTFail() }
+        if case .keepReading = parser.handle(step("ACTIVE", "agent_response", "This sentence")) {} else { XCTFail() }
+        guard case .finished(let answer) = parser.handle(step("DONE", "agent_response", " has two mistakes.")) else {
+            return XCTFail("expected the answer")
+        }
+        XCTAssertEqual(answer, "This sentence has two mistakes.")
+    }
+
+    func testAntigravityStreamReportsErrorSteps() {
+        let parser = AntigravityStreamParser()
+        let line = "{\"event\":\"step_update\",\"step_update\":{\"state\":\"DONE\",\"step_type\":\"error_message\"}}"
+        guard case .failed = parser.handle(line) else { return XCTFail("expected an error") }
+    }
+
     func testBuiltInCheckerIsAlwaysAvailableAndOnDevice() async {
         XCTAssertTrue(BackendID.builtIn.isOnDevice)
         XCTAssertFalse(BackendID.builtIn.canRewrite)

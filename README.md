@@ -109,7 +109,7 @@ Grammable never bundles a model or calls its own server. It drives tools **you a
 | **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** | ☁️ Anthropic, under **your own** Claude account | `claude` CLI installed & signed in | Included in your Claude plan |
 | **[Codex CLI](https://github.com/openai/codex)** | ☁️ OpenAI, under **your own** ChatGPT / OpenAI account | `codex` CLI installed & signed in | Included in your ChatGPT plan |
 | **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | ☁️ Google, under **your own** Google account | `gemini` CLI installed & signed in | Free tier available |
-| **[Antigravity CLI](https://antigravity.google/docs/cli/install)** | ☁️ Google, under **your own** Antigravity account | `agy` CLI installed & signed in | Included in your Antigravity plan |
+| **[Antigravity CLI](https://antigravity.google/docs/cli/install)** | ☁️ Google, under **your own** Antigravity account | `agy` CLI installed & signed in. Slower (often 10–70 s): it runs as a full agent | Included in your Antigravity plan |
 | **[Devin CLI](https://cognition.com/blog/devin-for-terminal)** | ☁️ Cognition, under **your own** Devin account | `devin` CLI installed & signed in (`devin auth login`) | Counts toward your Devin plan |
 | **[Ollama](https://ollama.com)** | 🔒 **Stays on your Mac** | Ollama running + any model (`ollama pull llama3.2`) | Free |
 | **[LM Studio](https://lmstudio.ai)** / Jan / llama.cpp | 🔒 **Stays on your Mac** | Local OpenAI-compatible server | Free |
