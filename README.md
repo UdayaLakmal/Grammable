@@ -21,6 +21,7 @@ No AI yet? Grammar fixes work out of the box, and a free offline AI is three cli
 
 [**Download**](https://github.com/UdayaLakmal/Grammable/releases/latest) ·
 `brew install --cask udayalakmal/tap/grammable` ·
+[Demo](#see-it-in-action) ·
 [Features](#features) ·
 [How it works](#how-it-works) ·
 [AI backends](#supported-ai-backends) ·
@@ -34,6 +35,18 @@ No AI yet? Grammar fixes work out of the box, and a free offline AI is three cli
   <img src="docs/screenshots/menu.png" width="300" alt="Grammable actions menu: fix grammar, change tone, rewrite, format" />
   <img src="docs/screenshots/review-grammar.png" width="500" alt="Grammable grammar check: accept or reject each correction" />
 </p>
+
+---
+
+## See it in action
+
+**Fix grammar and spelling.** Select text, pick **Fix Grammar & Spelling**, review each correction, then replace.
+
+<p align="center"><img src="docs/demo/fix-grammar.gif" width="720" alt="Demo: Grammable fixes grammar and spelling in a TextEdit note" /></p>
+
+**Change the tone.** The same note, rewritten with **Make Professional** and pasted back in one click.
+
+<p align="center"><img src="docs/demo/make-professional.gif" width="720" alt="Demo: Grammable rewrites a note in a professional tone" /></p>
 
 ---
 
