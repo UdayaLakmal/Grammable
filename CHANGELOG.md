@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.1.6 — 2026-11-18
 
 - Settings › Privacy now excludes only Terminal and Keychain Access by default; add any other app yourself
+- README: demo GIFs of fixing grammar and changing tone
 
 ## 0.1.5 — 2026-11-18
 
