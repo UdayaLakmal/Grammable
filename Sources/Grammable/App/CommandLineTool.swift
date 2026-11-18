@@ -118,7 +118,10 @@ enum CommandLineTool {
             box.value = await work()
             semaphore.signal()
         }
-        semaphore.wait()
+        // Keep the main run loop turning so work that needs the main thread (the macOS spell checker) can run.
+        while semaphore.wait(timeout: .now()) == .timedOut {
+            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.02))
+        }
         return box.value
     }
 

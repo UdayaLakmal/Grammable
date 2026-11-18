@@ -92,7 +92,6 @@ struct ActionMenuView: View {
                 Text("· \(wordCount) word\(wordCount == 1 ? "" : "s")")
                     .font(.system(size: 11)).foregroundStyle(.secondary)
                 Spacer()
-                PrivacyBadge(backend: coordinator.defaultBackend)
             }
             .padding(.horizontal, 12).padding(.top, 10).padding(.bottom, 6)
 
@@ -167,26 +166,38 @@ struct ActionMenuView: View {
     }
 }
 
-/// Shown at the top of the menu when the default AI isn't installed or running.
+/// Shown at the top of the menu when there is no AI to use: either the default isn't installed
+/// or running, or the default is the built-in checker (fixes only).
 struct NoAIBanner: View {
     let backend: BackendID
     let detail: String
     let openSettings: () -> Void
 
+    private var title: String {
+        backend == .builtIn ? "Grammar & spelling fixes only" : "\(backend.displayName) isn’t set up"
+    }
+    private var message: String {
+        backend == .builtIn
+            ? "Rewrites and tone changes need an AI. Set up a free offline one in a few clicks."
+            : "Grammar fixes use the macOS spell checker for now. For rewrites and tone, set up an AI."
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
-                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
-                Text("\(backend.displayName) isn’t set up").font(.system(size: 12, weight: .semibold))
+                Image(systemName: backend == .builtIn ? "info.circle.fill" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(backend == .builtIn ? Color.blue : Color.orange)
+                Text(title).font(.system(size: 12, weight: .semibold))
             }
-            Text("Grammable uses an AI you already have. Install one (free options: Ollama, LM Studio) or pick another in AI Backends.")
+            Text(message)
                 .font(.system(size: 11)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("Set Up AI…", action: openSettings).controlSize(.small)
+            Button("Set Up Free AI…", action: openSettings).controlSize(.small)
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange.opacity(0.12)))
+        .background(RoundedRectangle(cornerRadius: 8)
+            .fill((backend == .builtIn ? Color.blue : Color.orange).opacity(0.12)))
         .help(detail)
     }
 }

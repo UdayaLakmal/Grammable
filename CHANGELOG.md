@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4 — 2026-11-18
+
+- New built-in backend, **macOS Spelling & Grammar**: Fix Grammar & Spelling works with no AI installed, fully offline
+- When the chosen AI isn't installed or running, grammar fixes fall back to the macOS checker instead of failing
+- **Free offline AI** setup in Settings › AI Backends: download Ollama, start it, and download a small model with a progress bar, then use it as the default
+- The action menu explains when no AI is set up, with a Set Up Free AI button
+- Removed the Cloud/On-device badge from the action menu header; the footer already names the AI
+- Command line: `--run` no longer hangs with backends that need the main thread
+
 ## 0.1.3 — 2026-11-18
 
 - Monterey: Settings tabs now scroll and start at the top, so the tab bar stays visible

@@ -180,9 +180,15 @@ struct GeneralSettings: View {
 struct BackendSettings: View {
     @ObservedObject private var settings = AppSettings.shared
     @StateObject private var model = BackendStatusModel()
+    @StateObject private var offline = OfflineAISetupModel()
+    private let offlineTimer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
 
     var body: some View {
         Form {
+            Section {
+                OfflineAISetupView(model: offline) { model.refresh() }
+            }
+
             Section {
                 Picker("Default AI", selection: $settings.defaultBackend) {
                     ForEach(BackendID.allCases) { id in
@@ -193,7 +199,7 @@ struct BackendSettings: View {
                         .tag(id)
                     }
                 }
-                Text("Presets can override this — e.g. on-device for grammar, Claude for tone. Grammable has no servers and no subscription: it runs the AI you already have.")
+                Text("Presets can override this — e.g. on-device for grammar, Claude for tone. Without any AI, grammar and spelling fixes use the macOS spell checker. Grammable has no servers and no subscription.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 
@@ -207,7 +213,8 @@ struct BackendSettings: View {
         .toolbar {
             Button { model.refresh() } label: { Label("Refresh", systemImage: "arrow.clockwise") }
         }
-        .onAppear { model.refresh() }
+        .onAppear { model.refresh(); offline.refresh() }
+        .onReceive(offlineTimer) { _ in offline.refresh() }
     }
 
     @ViewBuilder
@@ -243,7 +250,7 @@ struct BackendSettings: View {
         if id == .openAICompatible {
             TextField("Server", text: $settings.openAIBaseURL, prompt: Text("http://localhost:1234/v1"))
         }
-        if id != .apple {
+        if id != .apple && id != .builtIn {
             TextField("Model", text: Binding(
                 get: { settings.model(for: id) }, set: { settings.setModel($0, for: id) }),
                 prompt: Text(modelPlaceholder(id)))
@@ -260,7 +267,7 @@ struct BackendSettings: View {
         case .gemini: return "Default (e.g. gemini-2.5-flash)"
         case .ollama: return "First installed model"
         case .openAICompatible: return "First loaded model"
-        case .apple: return ""
+        case .apple, .builtIn: return ""
         }
     }
 }

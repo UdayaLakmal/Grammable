@@ -36,30 +36,48 @@ public enum GrammableEngine {
         preset: Preset,
         text: String,
         defaultBackend: BackendID,
-        configuration: BackendConfiguration
+        configuration: BackendConfiguration,
+        fallbackToBuiltIn: Bool = true
     ) async throws -> EngineResult {
         let backendID = resolveBackend(for: preset, default: defaultBackend)
-        let backend = BackendFactory.make(backendID, configuration: configuration)
         let start = Date()
 
-        let raw = try await backend.complete(AIRequest(
-            instructions: preset.instructions,
-            text: text,
-            model: preset.backendID == backendID ? preset.model : nil
-        ))
+        if !backendID.canRewrite && preset.mode != .fix {
+            throw BackendError.unavailable(Self.needsAIMessage)
+        }
+
+        let raw: String
+        var usedID = backendID
+        do {
+            raw = try await BackendFactory.make(backendID, configuration: configuration).complete(AIRequest(
+                instructions: preset.instructions,
+                text: text,
+                model: preset.backendID == backendID ? preset.model : nil
+            ))
+        } catch let error as BackendError where fallbackToBuiltIn && preset.mode == .fix && error.meansNotSetUp {
+            // No AI installed or running: grammar and spelling fixes still work with macOS's own checker.
+            usedID = .builtIn
+            raw = try await BackendFactory.make(.builtIn, configuration: configuration)
+                .complete(AIRequest(instructions: preset.instructions, text: text))
+        }
         try Task.checkCancellation()
 
-        let cleaned = PromptBuilder.clean(raw, original: text)
+        // The built-in checker returns the corrected text itself, with no model chatter to strip.
+        let cleaned = usedID == .builtIn ? raw : PromptBuilder.clean(raw, original: text)
         guard !cleaned.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw BackendError.emptyResponse
         }
         return EngineResult(
             preset: preset,
-            backend: backendID,
+            backend: usedID,
             original: text,
             suggestion: cleaned,
             diff: TextDiff(original: text, revised: cleaned),
             duration: Date().timeIntervalSince(start)
         )
     }
+
+    public static let needsAIMessage =
+        "The macOS spell checker can fix spelling and grammar, but rewrites and tone changes need an AI. " +
+        "Set up a free offline AI (Ollama) in Settings › AI Backends, or use Claude Code, Codex or Gemini CLI."
 }

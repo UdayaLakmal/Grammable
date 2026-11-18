@@ -106,6 +106,9 @@ Grammable never bundles a model or calls its own server. It drives tools **you a
 | **[Ollama](https://ollama.com)** | 🔒 **Stays on your Mac** | Ollama running + any model (`ollama pull llama3.2`) | Free |
 | **[LM Studio](https://lmstudio.ai)** / Jan / llama.cpp | 🔒 **Stays on your Mac** | Local OpenAI-compatible server | Free |
 | **Apple Intelligence** | 🔒 **Stays on your Mac** | macOS 26+, Apple silicon, Apple Intelligence on, built with Xcode 26+ | Free |
+| **macOS Spelling & Grammar** (built in) | 🔒 **Stays on your Mac** | Nothing — always available. Grammar & spelling fixes only, no rewrites | Free |
+
+**No AI installed? It still works.** *Fix Grammar & Spelling* falls back to the spelling and grammar checker built into macOS, so it works on any Mac with zero setup. For rewrites and tone changes, **Settings → AI Backends → Free offline AI** sets up [Ollama](https://ollama.com) in three clicks: download Ollama, start it, then pick a small model (Llama 3.2 3B, 2 GB, or 1B, 1.3 GB, for older or Intel Macs). Grammable downloads it with a progress bar and makes it your default. Nothing is bundled in the 2 MB app, and no text ever leaves your Mac.
 
 > ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI and Gemini CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI or Google using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio** or **Apple Intelligence**. Every result shows an **On-device** or **Cloud** badge so you always know.
 
@@ -156,10 +159,12 @@ npm install -g @anthropic-ai/claude-code && claude      # sign in once
 npm install -g @openai/codex && codex                   # sign in once
 npm install -g @google/gemini-cli && gemini             # sign in once
 
-# Option B — 100% offline and free
+# Option B — 100% offline and free (or use Settings → AI Backends → Free offline AI)
 brew install ollama && ollama serve &
 ollama pull llama3.2
 ```
+
+No AI at all? *Fix Grammar & Spelling* still works using the macOS spell checker.
 
 ## Custom presets
 

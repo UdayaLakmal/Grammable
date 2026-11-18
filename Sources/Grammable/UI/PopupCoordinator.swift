@@ -134,7 +134,7 @@ final class PopupCoordinator: ObservableObject {
         Task { [weak self] in
             let status = await BackendFactory.make(id, configuration: configuration).checkAvailability()
             guard let self, self.phase == .menu else { return }
-            let detail = status.isAvailable ? nil : status.detail
+            let detail: String? = id == .builtIn ? status.detail : (status.isAvailable ? nil : status.detail)
             if detail != self.missingBackendDetail {
                 self.missingBackendDetail = detail
                 if detail != nil { DiagnosticLog.log("default AI unavailable: \(id.rawValue)") }

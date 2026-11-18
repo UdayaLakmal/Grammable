@@ -2,8 +2,9 @@
 
 import Foundation
 
-/// Every AI engine Grammable can drive. All of them are things you already have
+/// Every engine Grammable can drive. All of them are things you already have
 /// (or can install for free) — Grammable never ships its own model or server.
+/// `builtIn` is the macOS spelling and grammar checker: no AI, fixes only, always available.
 public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
     case claude
     case codex
@@ -11,6 +12,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
     case ollama
     case openAICompatible = "openai-compatible"
     case apple
+    case builtIn = "builtin"
 
     public var id: String { rawValue }
 
@@ -22,6 +24,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .ollama: return "Ollama"
         case .openAICompatible: return "LM Studio / OpenAI-compatible"
         case .apple: return "Apple Intelligence (on-device)"
+        case .builtIn: return "macOS Spelling & Grammar"
         }
     }
 
@@ -33,16 +36,20 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .ollama: return "Ollama"
         case .openAICompatible: return "Local server"
         case .apple: return "Apple"
+        case .builtIn: return "macOS"
         }
     }
 
     /// `true` when the text never leaves this Mac.
     public var isOnDevice: Bool {
         switch self {
-        case .ollama, .openAICompatible, .apple: return true
+        case .ollama, .openAICompatible, .apple, .builtIn: return true
         case .claude, .codex, .gemini: return false
         }
     }
+
+    /// `false` for the built-in checker, which can fix spelling and grammar but not rewrite.
+    public var canRewrite: Bool { self != .builtIn }
 
     /// Command-line executable name, for CLI-based backends.
     public var executableName: String? {
@@ -62,6 +69,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .ollama: return "Runs a model on this Mac through Ollama. Fully offline."
         case .openAICompatible: return "Talks to a local OpenAI-compatible server such as LM Studio, Jan or llama.cpp. Offline when the server is local."
         case .apple: return "Uses Apple's on-device foundation model (macOS 26+, Apple Intelligence enabled). Fully offline."
+        case .builtIn: return "Uses the spelling and grammar checker built into macOS. Fully offline, nothing to install. Fixes spelling and grammar only; rewrites and tone changes need an AI."
         }
     }
 
@@ -73,6 +81,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .ollama: return "Install from ollama.com (or brew install ollama), then: ollama pull llama3.2"
         case .openAICompatible: return "Start the local server in LM Studio (Developer → Start Server), Jan or llama.cpp."
         case .apple: return "Requires macOS 26 or later on Apple silicon with Apple Intelligence turned on."
+        case .builtIn: return "Built into macOS. Nothing to install."
         }
     }
 
@@ -84,6 +93,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .ollama: return URL(string: "https://ollama.com")!
         case .openAICompatible: return URL(string: "https://lmstudio.ai")!
         case .apple: return URL(string: "https://www.apple.com/apple-intelligence/")!
+        case .builtIn: return URL(string: "https://github.com/UdayaLakmal/Grammable#ai-backends")!
         }
     }
 }
@@ -148,6 +158,16 @@ public enum BackendError: Error, LocalizedError, Equatable {
     }
 }
 
+extension BackendError {
+    /// The AI isn't installed, running or usable on this Mac (as opposed to failing mid-request).
+    public var meansNotSetUp: Bool {
+        switch self {
+        case .notInstalled, .notReachable, .unavailable: return true
+        default: return false
+        }
+    }
+}
+
 /// A single request: instruction + text.
 public struct AIRequest: Sendable {
     public var instructions: String
@@ -187,6 +207,7 @@ public enum BackendFactory {
         case .ollama: return OllamaBackend(configuration: configuration)
         case .openAICompatible: return OpenAICompatibleBackend(configuration: configuration)
         case .apple: return AppleIntelligenceBackend()
+        case .builtIn: return MacSpellCheckerBackend()
         }
     }
 }

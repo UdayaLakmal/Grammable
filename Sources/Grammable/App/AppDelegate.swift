@@ -69,6 +69,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                         return
                     }
                 }
+                // No AI on this Mac yet: grammar and spelling fixes still work with the macOS checker.
+                settings.defaultBackend = .builtIn
             }
         }
     }
