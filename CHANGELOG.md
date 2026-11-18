@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Settings › Privacy now excludes only Terminal and Keychain Access by default; add any other app yourself
+
 ## 0.1.5 — 2026-11-18
 
 - New backends: **Antigravity CLI** (`agy`) and **Devin CLI** (`devin`), on your own accounts

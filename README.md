@@ -73,7 +73,7 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
 - 📝 **Custom presets as Markdown files** — write your own house style, share it on GitHub.
 - 🟢 **Menu bar on/off switch** — pause Grammable instantly.
 - 🚀 **Starts quietly at login** — sits in the menu bar after a restart, with no windows. Turn it off in Settings.
-- 🚫 **Per-app exclusions** — never pops up in Terminal, password managers, or apps you choose.
+- 🚫 **Per-app exclusions** — never pops up in Terminal, Keychain Access, or apps you choose.
 - 🔑 **Never reads password fields.** Your clipboard is restored after every action.
 - 🪶 **Native & lightweight** — Swift + SwiftUI, ~2 MB universal binary (Apple silicon & Intel), no Electron. Runs on **macOS 12 Monterey** and later.
 - 🧰 **Command-line mode** — `Grammable --run fix-grammar "text"` for scripts and Shortcuts.
@@ -231,7 +231,7 @@ pbpaste | $G --run professional --backend ollama | pbcopy
 
 - **No servers, no telemetry, no analytics, no account.** Grammable never phones home.
 - Selected text is read **locally** to decide whether to show the button. It is sent to an AI **only when you choose an action**, and **only** to the backend you picked.
-- **Password fields are never read.** Terminals and password managers are excluded by default.
+- **Password fields are never read.** Terminal and Keychain Access are excluded by default, and you can add any other app in Settings → Privacy.
 - Your **clipboard is restored** after copy/paste fallbacks, and temporary entries are marked so clipboard managers ignore them.
 - CLIs run in an empty temporary folder with tools, MCP servers and project settings **disabled** (Claude Code runs with `--tools "" --strict-mcp-config --setting-sources ""`), so the AI only ever sees the text you selected.
 - Nothing you write is logged or stored.

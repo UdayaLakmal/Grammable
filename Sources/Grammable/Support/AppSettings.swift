@@ -24,11 +24,7 @@ final class AppSettings: ObservableObject {
         static let hasLaunchedBefore = "hasLaunchedBefore"
     }
 
-    static let defaultExcludedBundleIDs = [
-        "com.apple.Terminal", "com.googlecode.iterm2", "com.mitchellh.ghostty", "dev.warp.Warp-Stable",
-        "net.kovidgoyal.kitty", "io.alacritty", "com.1password.1password", "com.agilebits.onepassword7",
-        "com.bitwarden.desktop", "com.apple.keychainaccess", "com.apple.Passwords",
-    ]
+    static let defaultExcludedBundleIDs = ["com.apple.Terminal", "com.apple.keychainaccess"]
 
     /// Master switch from the menu bar.
     @Published var isEnabled: Bool { didSet { defaults.set(isEnabled, forKey: Key.isEnabled) } }
