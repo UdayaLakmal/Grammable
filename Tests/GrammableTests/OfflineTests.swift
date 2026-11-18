@@ -61,6 +61,30 @@ final class OfflineTests: XCTestCase {
         }
     }
 
+    func testTerminalCodesAreStrippedFromCLIOutput() {
+        XCTAssertEqual(CLIRunner.stripTerminalCodes("\u{1B}[?2004lThis sentence has\u{1B}[0m two mistakes."),
+                       "This sentence has two mistakes.")
+        XCTAssertEqual(CLIRunner.stripTerminalCodes("\u{1B}]0;title\u{07}Hello"), "Hello")
+    }
+
+    func testAntigravityAndDevinAreCloudCLIBackends() {
+        XCTAssertEqual(BackendID.antigravity.executableName, "agy")
+        XCTAssertEqual(BackendID.devin.executableName, "devin")
+        XCTAssertFalse(BackendID.antigravity.isOnDevice)
+        XCTAssertFalse(BackendID.devin.isOnDevice)
+        XCTAssertEqual(BackendID(rawValue: "antigravity"), .antigravity)
+        XCTAssertEqual(BackendID(rawValue: "devin"), .devin)
+    }
+
+    func testMissingCLIBackendStillFixesGrammarWithBuiltInChecker() async throws {
+        let preset = BuiltInPresets.all.first { $0.mode == .fix }!
+        var config = BackendConfiguration()
+        config.executablePaths[.antigravity] = "/nonexistent/agy"
+        let result = try await GrammableEngine.run(preset: preset, text: "teh cat", defaultBackend: .antigravity,
+                                                   configuration: config)
+        XCTAssertEqual(result.backend, .builtIn)
+    }
+
     func testBuiltInCheckerIsAlwaysAvailableAndOnDevice() async {
         XCTAssertTrue(BackendID.builtIn.isOnDevice)
         XCTAssertFalse(BackendID.builtIn.canRewrite)

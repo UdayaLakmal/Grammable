@@ -9,6 +9,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
     case claude
     case codex
     case gemini
+    case antigravity
+    case devin
     case ollama
     case openAICompatible = "openai-compatible"
     case apple
@@ -21,6 +23,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "Claude Code"
         case .codex: return "Codex CLI"
         case .gemini: return "Gemini CLI"
+        case .antigravity: return "Antigravity CLI"
+        case .devin: return "Devin CLI"
         case .ollama: return "Ollama"
         case .openAICompatible: return "LM Studio / OpenAI-compatible"
         case .apple: return "Apple Intelligence (on-device)"
@@ -33,6 +37,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "Claude"
         case .codex: return "Codex"
         case .gemini: return "Gemini"
+        case .antigravity: return "Antigravity"
+        case .devin: return "Devin"
         case .ollama: return "Ollama"
         case .openAICompatible: return "Local server"
         case .apple: return "Apple"
@@ -44,7 +50,7 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
     public var isOnDevice: Bool {
         switch self {
         case .ollama, .openAICompatible, .apple, .builtIn: return true
-        case .claude, .codex, .gemini: return false
+        case .claude, .codex, .gemini, .antigravity, .devin: return false
         }
     }
 
@@ -57,6 +63,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "claude"
         case .codex: return "codex"
         case .gemini: return "gemini"
+        case .antigravity: return "agy"
+        case .devin: return "devin"
         default: return nil
         }
     }
@@ -66,6 +74,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "Runs your installed Claude Code CLI. Text is sent to Anthropic under your own Claude account."
         case .codex: return "Runs your installed Codex CLI. Text is sent to OpenAI under your own ChatGPT / OpenAI account."
         case .gemini: return "Runs your installed Gemini CLI. Text is sent to Google under your own Google account."
+        case .antigravity: return "Runs Google's Antigravity command-line tool (agy). Text is sent to Google under your own Antigravity account."
+        case .devin: return "Runs Cognition's Devin command-line tool. Text is sent to Cognition under your own Devin account and counts toward your Devin plan."
         case .ollama: return "Runs a model on this Mac through Ollama. Fully offline."
         case .openAICompatible: return "Talks to a local OpenAI-compatible server such as LM Studio, Jan or llama.cpp. Offline when the server is local."
         case .apple: return "Uses Apple's on-device foundation model (macOS 26+, Apple Intelligence enabled). Fully offline."
@@ -78,6 +88,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return "Install: npm install -g @anthropic-ai/claude-code — then run `claude` once to sign in."
         case .codex: return "Install: npm install -g @openai/codex (or brew install codex) — then run `codex` once to sign in."
         case .gemini: return "Install: npm install -g @google/gemini-cli (or brew install gemini-cli) — then run `gemini` once to sign in."
+        case .antigravity: return "Install the command-line tool: curl -fsSL https://antigravity.google/cli/install.sh | bash — then run `agy` once to sign in. The Antigravity app alone is not enough."
+        case .devin: return "Install the command-line tool: curl -fsSL https://cli.devin.ai/install.sh | bash — then run `devin auth login` once. The Devin app alone is not enough."
         case .ollama: return "Install from ollama.com (or brew install ollama), then: ollama pull llama3.2"
         case .openAICompatible: return "Start the local server in LM Studio (Developer → Start Server), Jan or llama.cpp."
         case .apple: return "Requires macOS 26 or later on Apple silicon with Apple Intelligence turned on."
@@ -90,6 +102,8 @@ public enum BackendID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .claude: return URL(string: "https://docs.anthropic.com/en/docs/claude-code")!
         case .codex: return URL(string: "https://github.com/openai/codex")!
         case .gemini: return URL(string: "https://github.com/google-gemini/gemini-cli")!
+        case .antigravity: return URL(string: "https://antigravity.google/docs/cli/install")!
+        case .devin: return URL(string: "https://cognition.com/blog/devin-for-terminal")!
         case .ollama: return URL(string: "https://ollama.com")!
         case .openAICompatible: return URL(string: "https://lmstudio.ai")!
         case .apple: return URL(string: "https://www.apple.com/apple-intelligence/")!
@@ -204,6 +218,8 @@ public enum BackendFactory {
         case .claude: return ClaudeCodeBackend(configuration: configuration)
         case .codex: return CodexBackend(configuration: configuration)
         case .gemini: return GeminiBackend(configuration: configuration)
+        case .antigravity: return AntigravityBackend(configuration: configuration)
+        case .devin: return DevinBackend(configuration: configuration)
         case .ollama: return OllamaBackend(configuration: configuration)
         case .openAICompatible: return OpenAICompatibleBackend(configuration: configuration)
         case .apple: return AppleIntelligenceBackend()

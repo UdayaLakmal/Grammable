@@ -19,6 +19,13 @@ public enum CLIRunner {
         return dir
     }()
 
+    /// Removes terminal control sequences (colors, bracketed-paste toggles) that some CLIs print
+    /// even when their output goes to a pipe.
+    public static func stripTerminalCodes(_ text: String) -> String {
+        text.replacingOccurrences(of: "\u{1B}\\[[0-9;?]*[A-Za-z]", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\u{1B}\\][^\u{07}]*\u{07}", with: "", options: .regularExpression)
+    }
+
     public static func run(
         executable: String,
         arguments: [String],

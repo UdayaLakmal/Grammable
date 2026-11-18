@@ -193,6 +193,12 @@ struct BackendSettings: View {
                 OfflineAISetupView(model: offline) { model.refresh() }
             }
 
+            if noCLIReady {
+                Section {
+                    CLISetupNote(statuses: model.statuses)
+                }
+            }
+
             Section {
                 Picker("Default AI", selection: $settings.defaultBackend) {
                     ForEach(BackendID.allCases) { id in
@@ -221,6 +227,13 @@ struct BackendSettings: View {
         .onReceive(offlineTimer) { _ in offline.refresh() }
     }
 
+    /// True once statuses are loaded and none of the agent command-line tools can be used.
+    private var noCLIReady: Bool {
+        let cli = DesktopApps.cliBackends
+        guard cli.allSatisfy({ model.statuses[$0] != nil }) else { return false }
+        return cli.allSatisfy { model.statuses[$0]?.isAvailable != true }
+    }
+
     @ViewBuilder
     private func backendRow(_ id: BackendID) -> some View {
         let status = model.statuses[id]
@@ -240,6 +253,10 @@ struct BackendSettings: View {
         }
         VStack(alignment: .leading, spacing: 3) {
             Text(status?.detail ?? "Checking…").font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+            if status?.isAvailable == false, let app = DesktopApps.installedApp(for: id) {
+                Text("The \(app) app is installed, but Grammable needs its command-line tool.")
+                    .font(.caption).foregroundStyle(.orange)
+            }
             Text(id.privacyNote).font(.caption2).foregroundStyle(.tertiary)
         }
 
@@ -269,6 +286,8 @@ struct BackendSettings: View {
         case .claude: return "Default (e.g. haiku, sonnet)"
         case .codex: return "Default (e.g. gpt-5-mini)"
         case .gemini: return "Default (e.g. gemini-2.5-flash)"
+        case .antigravity: return "Default"
+        case .devin: return "Default (e.g. sonnet, opus, codex)"
         case .ollama: return "First installed model"
         case .openAICompatible: return "First loaded model"
         case .apple, .builtIn: return ""

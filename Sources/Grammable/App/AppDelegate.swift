@@ -63,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if !settings.hasChosenBackend {
             let config = settings.backendConfiguration
             Task { [settings] in
-                for id in [BackendID.claude, .codex, .gemini, .apple, .ollama, .openAICompatible] {
+                for id in [BackendID.claude, .codex, .gemini, .antigravity, .devin, .apple, .ollama, .openAICompatible] {
                     if await BackendFactory.make(id, configuration: config).checkAvailability().isAvailable {
                         settings.defaultBackend = id
                         return

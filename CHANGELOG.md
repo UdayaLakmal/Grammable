@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5 — 2026-11-18
+
+- New backends: **Antigravity CLI** (`agy`) and **Devin CLI** (`devin`), on your own accounts
+- Settings › AI Backends explains that each service's command-line tool is needed (not only its desktop app), lists the install commands when none is set up, and flags apps installed without their CLI
+- Devin shows "not signed in" in Settings instead of failing on first use
+
 ## 0.1.4 — 2026-11-18
 
 - New built-in backend, **macOS Spelling & Grammar**: Fix Grammar & Spelling works with no AI installed, fully offline

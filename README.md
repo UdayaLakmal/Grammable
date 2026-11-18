@@ -7,7 +7,7 @@
 ### Free, open-source AI grammar checker & rewriter for macOS
 
 **Fix grammar and spelling, change tone, rewrite and format text in _any_ Mac app —
-powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio or Apple Intelligence.
+powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Antigravity, Devin, Ollama, LM Studio or Apple Intelligence.
 No AI yet? Grammar fixes work out of the box, and a free offline AI is three clicks away.**
 
 **No subscription. No account. No servers. 100% free.**
@@ -46,7 +46,7 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
 | | Grammable | Typical subscription writing assistants |
 |---|---|---|
 | Price | **Free forever (GPL-3.0)** | Monthly subscription |
-| AI model | **Your choice:** Claude, GPT/Codex, Gemini, Llama, Qwen, Mistral, Apple on-device… | Vendor's model only |
+| AI model | **Your choice:** Claude, GPT/Codex, Gemini, Antigravity, Devin, Llama, Qwen, Mistral, Apple on-device… | Vendor's model only |
 | Offline mode | **Yes** (Ollama, LM Studio, Apple Intelligence, built-in macOS checker) | No |
 | Works with nothing installed | **Yes** — grammar & spelling via the macOS checker | — |
 | Works in | **Any app** with selectable text | Selected apps / browser |
@@ -54,7 +54,7 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
 | Your own prompts | **Yes** — shareable Markdown presets | Limited |
 | Source code | **Open** | Closed |
 
-> **Reuse what you already have.** If Claude Code, Codex or Gemini CLI is signed in on your Mac, Grammable simply runs it — on the plan you already pay for. No API keys to paste, nothing new to buy.
+> **Reuse what you already have.** If Claude Code, Codex, Gemini, Antigravity or Devin's command-line tool is signed in on your Mac, Grammable simply runs it — on the plan you already pay for. No API keys to paste, nothing new to buy.
 
 ---
 
@@ -84,7 +84,7 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
  Select text in any app ──► G button appears ──► pick an action ──► review ──► Replace / Copy
         (Mail, Slack, Notes, Safari, Chrome, Word, VS Code, …)         │
                                                                        ▼
-                     Claude Code · Codex CLI · Gemini CLI · Ollama · LM Studio · Apple Intelligence
+        Claude Code · Codex CLI · Gemini CLI · Antigravity CLI · Devin CLI · Ollama · LM Studio · Apple Intelligence
                                   (no AI? grammar fixes use the macOS spell checker)
 ```
 
@@ -109,14 +109,18 @@ Grammable never bundles a model or calls its own server. It drives tools **you a
 | **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** | ☁️ Anthropic, under **your own** Claude account | `claude` CLI installed & signed in | Included in your Claude plan |
 | **[Codex CLI](https://github.com/openai/codex)** | ☁️ OpenAI, under **your own** ChatGPT / OpenAI account | `codex` CLI installed & signed in | Included in your ChatGPT plan |
 | **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | ☁️ Google, under **your own** Google account | `gemini` CLI installed & signed in | Free tier available |
+| **[Antigravity CLI](https://antigravity.google/docs/cli/install)** | ☁️ Google, under **your own** Antigravity account | `agy` CLI installed & signed in | Included in your Antigravity plan |
+| **[Devin CLI](https://cognition.com/blog/devin-for-terminal)** | ☁️ Cognition, under **your own** Devin account | `devin` CLI installed & signed in (`devin auth login`) | Counts toward your Devin plan |
 | **[Ollama](https://ollama.com)** | 🔒 **Stays on your Mac** | Ollama running + any model (`ollama pull llama3.2`) | Free |
 | **[LM Studio](https://lmstudio.ai)** / Jan / llama.cpp | 🔒 **Stays on your Mac** | Local OpenAI-compatible server | Free |
 | **Apple Intelligence** | 🔒 **Stays on your Mac** | macOS 26+, Apple silicon, Apple Intelligence on, built with Xcode 26+ | Free |
 | **macOS Spelling & Grammar** (built in) | 🔒 **Stays on your Mac** | Nothing — always available. Grammar & spelling fixes only, no rewrites | Free |
 
+> 💡 **Install the command-line tool, not just the app.** Grammable runs Claude Code, Codex, Gemini, Antigravity and Devin through their **command-line tools**. Having only the desktop app (Claude, ChatGPT, Antigravity, Antigravity IDE or Devin) isn't enough. Install the CLI with the commands below and run it once in Terminal to sign in. If none is set up, **Settings → AI Backends** shows these commands and tells you which apps are missing their command-line tool.
+
 **No AI installed? It still works.** *Fix Grammar & Spelling* falls back to the spelling and grammar checker built into macOS, so it works on any Mac with zero setup. For rewrites and tone changes, **Settings → AI Backends → Free offline AI** sets up [Ollama](https://ollama.com) in three clicks: download Ollama, start it, then pick a small model (Llama 3.2 3B, 2 GB, or 1B, 1.3 GB, for older or Intel Macs). Grammable downloads it with a progress bar and makes it your default. Nothing is bundled in the 2 MB app, and no text ever leaves your Mac.
 
-> ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI and Gemini CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI or Google using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio**, **Apple Intelligence** or the built-in **macOS Spelling & Grammar** checker. Every result shows an **On-device** or **Cloud** badge so you always know.
+> ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI, Gemini CLI, Antigravity CLI and Devin CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI, Google or Cognition using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio**, **Apple Intelligence** or the built-in **macOS Spelling & Grammar** checker. Every result shows an **On-device** or **Cloud** badge so you always know.
 
 <p align="center"><img src="docs/screenshots/settings-backends.png" width="560" alt="Grammable AI backend settings" /></p>
 
@@ -176,6 +180,8 @@ Grammar and spelling fixes work without one. For tone changes and rewrites, pick
 npm install -g @anthropic-ai/claude-code && claude      # sign in once
 npm install -g @openai/codex && codex                   # sign in once
 npm install -g @google/gemini-cli && gemini             # sign in once
+curl -fsSL https://antigravity.google/cli/install.sh | bash && agy      # Antigravity, sign in once
+curl -fsSL https://cli.devin.ai/install.sh | bash && devin auth login   # Devin, sign in once
 
 # Option B — 100% offline and free (easiest: Settings → AI Backends → Free offline AI)
 brew install ollama && ollama serve &
@@ -193,7 +199,7 @@ Every action is a plain **Markdown file** in `~/.grammable/presets/`. Create one
 name: Professional Email
 icon: briefcase        # any SF Symbol name
 mode: rewrite          # rewrite = before/after view · fix = accept/reject each change
-backend: claude        # optional: claude | codex | gemini | ollama | openai-compatible | apple | builtin
+backend: claude        # optional: claude | codex | gemini | antigravity | devin | ollama | openai-compatible | apple | builtin
 model: haiku           # optional, backend-specific
 order: 15              # optional, position in the menu
 ---
@@ -253,7 +259,7 @@ No, on purpose. Grammable never watches your typing and does no live underlining
 <details>
 <summary><b>Does it work offline?</b></summary>
 
-Yes, with **Ollama**, **LM Studio** (or any local OpenAI-compatible server), **Apple Intelligence**, or the built-in **macOS Spelling & Grammar** checker. Claude Code, Codex and Gemini CLI need the internet.
+Yes, with **Ollama**, **LM Studio** (or any local OpenAI-compatible server), **Apple Intelligence**, or the built-in **macOS Spelling & Grammar** checker. Claude Code, Codex, Gemini, Antigravity and Devin need the internet.
 </details>
 
 <details>
@@ -263,9 +269,15 @@ No. *Fix Grammar & Spelling* works immediately using the checker built into macO
 </details>
 
 <details>
+<summary><b>I have the Claude / Antigravity / Devin app. Why isn't it listed as available?</b></summary>
+
+Grammable needs each service's **command-line tool**, which is separate from its desktop app. Install it (see [Set up an AI backend](#set-up-an-ai-backend-optional)), run it once in Terminal to sign in, then click **Refresh** in Settings → AI Backends. Settings tells you when an app is installed without its command-line tool.
+</details>
+
+<details>
 <summary><b>Do I need an API key?</b></summary>
 
-No. Grammable uses the CLIs you have already signed in to (Claude Code, Codex, Gemini), or local models that need no key at all.
+No. Grammable uses the CLIs you have already signed in to (Claude Code, Codex, Gemini, Antigravity, Devin), or local models that need no key at all.
 </details>
 
 <details>
@@ -334,8 +346,8 @@ Copyright © 2026 Udaya Lakmal.
 
 Grammable is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License v3.0](LICENSE) or (at your option) any later version.
 
-Claude, Codex, Gemini, Ollama, LM Studio, Apple Intelligence and Apple are trademarks of their respective owners. Grammable is an independent project and is not affiliated with or endorsed by any of them.
+Claude, Codex, Gemini, Antigravity, Devin, Ollama, LM Studio, Apple Intelligence and Apple are trademarks of their respective owners. Grammable is an independent project and is not affiliated with or endorsed by any of them.
 
 ---
 
-<sub>Keywords: free grammar checker for Mac, AI writing assistant macOS, open source grammar checker, rewrite text with AI, tone changer, paraphrasing tool, spell checker, proofreading app, Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio, local LLM, offline AI writing, offline grammar checker, works on macOS Monterey, Apple Intelligence Writing Tools alternative, menu bar app, SwiftUI.</sub>
+<sub>Keywords: free grammar checker for Mac, AI writing assistant macOS, open source grammar checker, rewrite text with AI, tone changer, paraphrasing tool, spell checker, proofreading app, Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio, Antigravity CLI, Devin CLI, local LLM, offline AI writing, offline grammar checker, works on macOS Monterey, Apple Intelligence Writing Tools alternative, menu bar app, SwiftUI.</sub>
