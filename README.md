@@ -48,6 +48,10 @@ No AI yet? Grammar fixes work out of the box, and a free offline AI is three cli
 
 <p align="center"><img src="docs/demo/make-professional.gif" width="720" alt="Demo: Grammable rewrites a note in a professional tone" /></p>
 
+**Menu bar and Settings.** Turn Grammable on or off, pick the default AI, set up free offline AI, edit presets and choose which apps to skip.
+
+<p align="center"><img src="docs/demo/settings-tour.gif" width="720" alt="Demo: Grammable menu bar menu and Settings tabs" /></p>
+
 ---
 
 ## Why Grammable?
