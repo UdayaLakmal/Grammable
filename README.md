@@ -7,7 +7,8 @@
 ### Free, open-source AI grammar checker & rewriter for macOS
 
 **Fix grammar and spelling, change tone, rewrite and format text in _any_ Mac app —
-powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio or Apple Intelligence.**
+powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio or Apple Intelligence.
+No AI yet? Grammar fixes work out of the box, and a free offline AI is three clicks away.**
 
 **No subscription. No account. No servers. 100% free.**
 
@@ -40,13 +41,14 @@ powered by the AI you already have: Claude Code, Codex CLI, Gemini CLI, Ollama, 
 
 Paying a monthly subscription for a grammar checker when you **already pay for Claude, ChatGPT or Gemini** — or can run a free local model — makes no sense.
 
-Grammable is a tiny **menu bar app** that turns the AI tools already installed on your Mac into a **system-wide writing assistant**, like Grammarly — without the extra subscription, the browser extension or sending your writing to yet another company.
+Grammable is a tiny **menu bar app** that turns the AI tools already installed on your Mac into a **system-wide writing assistant** — without the extra subscription, the browser extension or sending your writing to yet another company.
 
 | | Grammable | Typical subscription writing assistants |
 |---|---|---|
 | Price | **Free forever (GPL-3.0)** | Monthly subscription |
 | AI model | **Your choice:** Claude, GPT/Codex, Gemini, Llama, Qwen, Mistral, Apple on-device… | Vendor's model only |
-| Offline mode | **Yes** (Ollama, LM Studio, Apple Intelligence) | No |
+| Offline mode | **Yes** (Ollama, LM Studio, Apple Intelligence, built-in macOS checker) | No |
+| Works with nothing installed | **Yes** — grammar & spelling via the macOS checker | — |
 | Works in | **Any app** with selectable text | Selected apps / browser |
 | Extra account | **None** | Required |
 | Your own prompts | **Yes** — shareable Markdown presets | Limited |
@@ -65,12 +67,15 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
 - 🖱️ **Appears when you select text** — a small **G** button pops up next to your selection; click it for actions. No live typing surveillance.
 - ⌨️ **Global shortcut `⌃⌥G`** — works even when the pop-up button is turned off.
 - 🧠 **Choose the AI per action** — e.g. on-device Ollama for grammar, Claude for tone.
+- 🆓 **Works with no AI installed** — *Fix Grammar & Spelling* uses the spelling and grammar checker built into macOS, and takes over automatically if your AI isn't installed or running.
+- 📦 **One-click free offline AI** — *Settings → AI Backends → Free offline AI* installs Ollama and downloads a small model with a progress bar. No account, nothing leaves your Mac.
 - 🔒 **Privacy badge on every result** — always shows whether your text stayed **On-device** or went to the **Cloud**.
 - 📝 **Custom presets as Markdown files** — write your own house style, share it on GitHub.
 - 🟢 **Menu bar on/off switch** — pause Grammable instantly.
+- 🚀 **Starts quietly at login** — sits in the menu bar after a restart, with no windows. Turn it off in Settings.
 - 🚫 **Per-app exclusions** — never pops up in Terminal, password managers, or apps you choose.
 - 🔑 **Never reads password fields.** Your clipboard is restored after every action.
-- 🪶 **Native & lightweight** — Swift + SwiftUI, universal binary (Apple silicon & Intel), no Electron.
+- 🪶 **Native & lightweight** — Swift + SwiftUI, ~2 MB universal binary (Apple silicon & Intel), no Electron. Runs on **macOS 12 Monterey** and later.
 - 🧰 **Command-line mode** — `Grammable --run fix-grammar "text"` for scripts and Shortcuts.
 
 ## How it works
@@ -80,11 +85,12 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
         (Mail, Slack, Notes, Safari, Chrome, Word, VS Code, …)         │
                                                                        ▼
                      Claude Code · Codex CLI · Gemini CLI · Ollama · LM Studio · Apple Intelligence
+                                  (no AI? grammar fixes use the macOS spell checker)
 ```
 
 1. **Select** some text you wrote — in any app.
 2. Click the **G** button that appears next to it (or press **`⌃⌥G`**).
-3. Choose an action: **Fix Grammar & Spelling**, **Make Professional**, **Make Concise**, **Format as Email**… (number keys `1`–`9` work too).
+3. Choose an action: **Fix Grammar & Spelling**, **Make Professional**, **Make Concise**, **Format as Email**… (number keys `1`–`9` work too). The bottom of the menu shows which AI will be used, and a notice with **Set Up Free AI…** appears if none is set up.
 4. **Review** the suggestion:
    - *Grammar fixes* → every change is listed; tick the ones you want.
    - *Rewrites* → an editable before/after view.
@@ -96,7 +102,7 @@ Grammable is a tiny **menu bar app** that turns the AI tools already installed o
 
 ## Supported AI backends
 
-Grammable never bundles a model or calls its own server. It drives tools **you already have installed**:
+Grammable never bundles a model or calls its own server. It drives tools **you already have installed** — and works without any of them for grammar and spelling:
 
 | Backend | Where your text goes | What you need | Cost |
 |---|---|---|---|
@@ -110,7 +116,7 @@ Grammable never bundles a model or calls its own server. It drives tools **you a
 
 **No AI installed? It still works.** *Fix Grammar & Spelling* falls back to the spelling and grammar checker built into macOS, so it works on any Mac with zero setup. For rewrites and tone changes, **Settings → AI Backends → Free offline AI** sets up [Ollama](https://ollama.com) in three clicks: download Ollama, start it, then pick a small model (Llama 3.2 3B, 2 GB, or 1B, 1.3 GB, for older or Intel Macs). Grammable downloads it with a progress bar and makes it your default. Nothing is bundled in the 2 MB app, and no text ever leaves your Mac.
 
-> ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI and Gemini CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI or Google using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio** or **Apple Intelligence**. Every result shows an **On-device** or **Cloud** badge so you always know.
+> ⚠️ **Important — about "local".** Grammable itself runs entirely on your Mac and has no servers. However, **Claude Code, Codex CLI and Gemini CLI are cloud services**: when you choose them, your selected text is sent to Anthropic, OpenAI or Google using **your own** installed and signed-in CLI, under your account and their terms. For **fully offline** use, choose **Ollama**, **LM Studio**, **Apple Intelligence** or the built-in **macOS Spelling & Grammar** checker. Every result shows an **On-device** or **Cloud** badge so you always know.
 
 <p align="center"><img src="docs/screenshots/settings-backends.png" width="560" alt="Grammable AI backend settings" /></p>
 
@@ -125,7 +131,17 @@ brew install --cask udayalakmal/tap/grammable
 ```
 
 Then open **Grammable** from Applications and allow **Accessibility** when asked.
-Upgrade with `brew upgrade --cask grammable`. On Homebrew 7, if you're asked to trust the tap, run `brew trust udayalakmal/tap` first.
+On Homebrew 7, if you're asked to trust the tap, run `brew trust udayalakmal/tap` first.
+
+**Upgrading:**
+
+```bash
+brew update && brew upgrade --cask grammable
+```
+
+If Homebrew says the latest version is already installed but Grammable is older, `brew update` was skipped — run it first. After each upgrade, remove Grammable from the Accessibility list with **–** and add it again with **+** (needed until releases are notarized).
+
+Settings opens by itself only on the first launch. After that Grammable starts quietly at login; open it again from Applications or Spotlight to reach Settings.
 
 ### Download
 
@@ -135,7 +151,7 @@ Upgrade with `brew upgrade --cask grammable`. On Homebrew 7, if you're asked to 
    ```bash
    xattr -dr com.apple.quarantine /Applications/Grammable.app
    ```
-4. Allow **Accessibility** when asked (System Settings → Privacy & Security → Accessibility). This lets Grammable read your selection and paste the result back.
+4. Allow **Accessibility** when asked (System Settings → Privacy & Security → Accessibility; on Monterey, System Preferences → Security & Privacy → Privacy → Accessibility). This lets Grammable read your selection and paste the result back.
 5. Look for the **G** icon in the menu bar. Done!
 
 ### Build from source
@@ -151,7 +167,9 @@ open dist/Grammable.app
 
 Run the tests with `swift test`.
 
-### Set up at least one AI backend
+### Set up an AI backend (optional)
+
+Grammar and spelling fixes work without one. For tone changes and rewrites, pick any of these:
 
 ```bash
 # Option A — reuse a subscription you already have (cloud)
@@ -159,7 +177,7 @@ npm install -g @anthropic-ai/claude-code && claude      # sign in once
 npm install -g @openai/codex && codex                   # sign in once
 npm install -g @google/gemini-cli && gemini             # sign in once
 
-# Option B — 100% offline and free (or use Settings → AI Backends → Free offline AI)
+# Option B — 100% offline and free (easiest: Settings → AI Backends → Free offline AI)
 brew install ollama && ollama serve &
 ollama pull llama3.2
 ```
@@ -175,7 +193,7 @@ Every action is a plain **Markdown file** in `~/.grammable/presets/`. Create one
 name: Professional Email
 icon: briefcase        # any SF Symbol name
 mode: rewrite          # rewrite = before/after view · fix = accept/reject each change
-backend: claude        # optional: claude | codex | gemini | ollama | openai-compatible | apple
+backend: claude        # optional: claude | codex | gemini | ollama | openai-compatible | apple | builtin
 model: haiku           # optional, backend-specific
 order: 15              # optional, position in the menu
 ---
@@ -199,6 +217,7 @@ $G --status                                    # which backends are available
 $G --list                                      # list presets
 $G --render-ui ~/Desktop/grammable-ui          # render every screen to PNG
 $G --run fix-grammar --diff "i has went home"  # → I went home.
+$G --run fix-grammar --backend builtin "teh email"   # macOS spell checker, no AI
 pbpaste | $G --run professional --backend ollama | pbcopy
 ```
 
@@ -215,7 +234,7 @@ pbpaste | $G --run professional --backend ollama | pbcopy
 
 - macOS 12 Monterey or later (Apple silicon or Intel)
 - Accessibility permission
-- At least one AI backend from the table above
+- An AI backend from the table above for tone changes and rewrites (grammar fixes work without one)
 
 ## FAQ
 
@@ -226,15 +245,21 @@ Yes — it's GPL-3.0 open source. There's no paid tier, no account and no server
 </details>
 
 <details>
-<summary><b>Is this a free Grammarly alternative for Mac?</b></summary>
+<summary><b>Does it check my writing as I type?</b></summary>
 
-Grammable covers the most-used parts — grammar & spelling fixes, tone changes, rewriting and formatting in any app — using an AI of your choice. It intentionally does **not** do live as-you-type underlining; it works on text you select.
+No, on purpose. Grammable never watches your typing and does no live underlining. It works only on text you select and only when you ask: grammar & spelling fixes, tone changes, rewriting and formatting in any app, using an AI of your choice.
 </details>
 
 <details>
 <summary><b>Does it work offline?</b></summary>
 
-Yes, with **Ollama**, **LM Studio** (or any local OpenAI-compatible server) or **Apple Intelligence**. Claude Code, Codex and Gemini CLI need the internet.
+Yes, with **Ollama**, **LM Studio** (or any local OpenAI-compatible server), **Apple Intelligence**, or the built-in **macOS Spelling & Grammar** checker. Claude Code, Codex and Gemini CLI need the internet.
+</details>
+
+<details>
+<summary><b>Do I need to install an AI first?</b></summary>
+
+No. *Fix Grammar & Spelling* works immediately using the checker built into macOS (it's simpler than an AI: it catches spelling and common grammar mistakes). For tone changes and rewrites, open **Settings → AI Backends → Free offline AI**: Grammable helps you install the free Ollama app and downloads a small model (Llama 3.2 3B, about 2 GB, or 1B, about 1.3 GB, for older or Intel Macs). Grammable itself stays about 2 MB — no model is bundled.
 </details>
 
 <details>
@@ -262,6 +287,18 @@ Check that Grammable is **Enabled** in the menu bar, Accessibility is granted (S
 </details>
 
 <details>
+<summary><b>Homebrew says it's up to date, but I have an old version.</b></summary>
+
+Homebrew refreshes taps only occasionally. Run `brew update`, then `brew upgrade --cask grammable`. If that still doesn't help: `brew reinstall --cask udayalakmal/tap/grammable`.
+</details>
+
+<details>
+<summary><b>How do I stop Grammable from starting at login?</b></summary>
+
+Turn off **Launch at login** in Settings → General (or in System Settings → General → Login Items). Settings opens automatically only on the very first launch; afterwards Grammable starts quietly in the menu bar.
+</details>
+
+<details>
 <summary><b>Which backend is fastest?</b></summary>
 
 Local models on Apple silicon (Ollama with a small model such as `llama3.2` or `qwen2.5:3b`) usually answer in 1–3 seconds. Agent CLIs typically take 3–8 seconds. Set a smaller model (e.g. `haiku` for Claude) in Settings for faster replies.
@@ -276,6 +313,8 @@ Local models on Apple silicon (Ollama with a small model such as `llama3.2` or `
 - [ ] Preset chaining (e.g. Fix Grammar → Make Concise)
 - [ ] Explanations for each grammar fix
 - [ ] Localization
+- [x] Works without an AI (macOS spell checker) and one-click offline AI setup
+- [x] macOS 12 Monterey support
 
 ## Contributing
 
@@ -295,8 +334,8 @@ Copyright © 2026 Udaya Lakmal.
 
 Grammable is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License v3.0](LICENSE) or (at your option) any later version.
 
-Claude, Codex, Gemini, Ollama, LM Studio, Apple Intelligence and Grammarly are trademarks of their respective owners. Grammable is an independent project and is not affiliated with or endorsed by any of them.
+Claude, Codex, Gemini, Ollama, LM Studio, Apple Intelligence and Apple are trademarks of their respective owners. Grammable is an independent project and is not affiliated with or endorsed by any of them.
 
 ---
 
-<sub>Keywords: free grammar checker for Mac, AI writing assistant macOS, Grammarly alternative, open source grammar checker, rewrite text with AI, tone changer, paraphrasing tool, spell checker, proofreading app, Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio, local LLM, offline AI writing, Apple Intelligence Writing Tools alternative, menu bar app, SwiftUI.</sub>
+<sub>Keywords: free grammar checker for Mac, AI writing assistant macOS, open source grammar checker, rewrite text with AI, tone changer, paraphrasing tool, spell checker, proofreading app, Claude Code, Codex CLI, Gemini CLI, Ollama, LM Studio, local LLM, offline AI writing, offline grammar checker, works on macOS Monterey, Apple Intelligence Writing Tools alternative, menu bar app, SwiftUI.</sub>
