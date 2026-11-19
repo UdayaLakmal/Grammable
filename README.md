@@ -40,17 +40,20 @@ No AI yet? Grammar fixes work out of the box, and a free offline AI is three cli
 
 ## See it in action
 
-**Fix grammar and spelling.** Select text, pick **Fix Grammar & Spelling**, review each correction, then replace.
+<table>
+  <tr>
+    <td align="center" width="33%"><a href="docs/demo/fix-grammar.gif"><img src="docs/demo/fix-grammar.gif" alt="Demo: Grammable fixes grammar and spelling in a TextEdit note" /></a></td>
+    <td align="center" width="33%"><a href="docs/demo/make-professional.gif"><img src="docs/demo/make-professional.gif" alt="Demo: Grammable rewrites a note in a professional tone" /></a></td>
+    <td align="center" width="33%"><a href="docs/demo/settings-tour.gif"><img src="docs/demo/settings-tour.gif" alt="Demo: Grammable menu bar menu and Settings tabs" /></a></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Fix grammar &amp; spelling</b><br/><sub>Review each correction, then replace.</sub></td>
+    <td align="center"><b>Change the tone</b><br/><sub>Make Professional, pasted back in one click.</sub></td>
+    <td align="center"><b>Menu bar &amp; Settings</b><br/><sub>Default AI, offline AI, presets, privacy.</sub></td>
+  </tr>
+</table>
 
-<p align="center"><img src="docs/demo/fix-grammar.gif" width="720" alt="Demo: Grammable fixes grammar and spelling in a TextEdit note" /></p>
-
-**Change the tone.** The same note, rewritten with **Make Professional** and pasted back in one click.
-
-<p align="center"><img src="docs/demo/make-professional.gif" width="720" alt="Demo: Grammable rewrites a note in a professional tone" /></p>
-
-**Menu bar and Settings.** Turn Grammable on or off, pick the default AI, set up free offline AI, edit presets and choose which apps to skip.
-
-<p align="center"><img src="docs/demo/settings-tour.gif" width="720" alt="Demo: Grammable menu bar menu and Settings tabs" /></p>
+<p align="center"><sub>Click any demo to see it full size.</sub></p>
 
 ---
 
