@@ -75,6 +75,17 @@ It's a tiny **menu bar app** that turns the AI tools already installed on your M
 
 > **Reuse what you already have.** If Claude Code, Codex, Gemini, Antigravity or Devin's command-line tool is signed in on your Mac, Grammable simply runs it — on the plan you already pay for. No API keys to paste, nothing new to buy.
 
+### What about Apple's built-in Writing Tools?
+
+macOS has checked spelling since the first Mac OS X and grammar since Mac OS X 10.5 Leopard (2007), but that checker misses many mistakes an AI catches. AI rewriting (Apple Intelligence **Writing Tools**) only arrived in **macOS Sequoia 15.1 (October 2024)**, and only on **Apple silicon** Macs.
+
+- 💻 **On Monterey, Ventura, Sonoma or an Intel Mac?** Your Mac has **no built-in AI rewriting at all**. Grammable adds it, powered by Claude, Codex, Gemini, Ollama or any other supported AI, back to **macOS 12**.
+- ✨ **On Sequoia or later with Apple silicon?** Grammable still goes further:
+  - 🧠 **Your choice of model:** Claude, GPT, Gemini, Llama and more, or Apple's own on-device model on macOS 26.
+  - 🧩 **Your own presets:** write a prompt once and it becomes a one-click action.
+  - ✅ **Every fix shown separately:** accept or reject each correction instead of taking the whole rewrite.
+  - ⌨️ **One shortcut everywhere:** the same **⌃⌥G** menu in every app, including apps where Writing Tools doesn't show up.
+
 ---
 
 ## Features
